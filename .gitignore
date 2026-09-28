@@ -1,0 +1,50 @@
+# ==========================================
+# 1. Gradle Output & Cache
+# ==========================================
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# ==========================================
+# 2. Compilados y binarios de Java
+# ==========================================
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+
+# ==========================================
+# 3. Archivos de IntelliJ IDEA
+# ==========================================
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+.idea_modules/
+
+# ==========================================
+# 4. Archivos de Visual Studio Code
+# ==========================================
+.vscode/
+
+# ==========================================
+# 5. Archivos de Eclipse
+# ==========================================
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache
+
+# ==========================================
+# 6. Registros y temporales del sistema
+# ==========================================
+*.log
+.DS_Store
+Thumbs.db
