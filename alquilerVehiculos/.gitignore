@@ -46,3 +46,10 @@ temp/
 application-local.properties
 application-local.yml
 application-local.yaml
+# ==============================
+# Eclipse / VS Code
+# ==============================
+.project
+.classpath
+.settings/
+bin/
