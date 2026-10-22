@@ -1,0 +1,557 @@
+{
+  "info": {
+    "_postman_id": "ba59ae30-5157-496f-92c7-2b6af74f781a",
+    "name": "Alquiler de Vehiculos",
+    "description": "[Learn more about Postman Collections.](https://learning.postman.com/docs/collections/collections-overview/)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "59127106",
+    "_collection_link": "https://go.postman.co/collection/59127106-ba59ae30-5157-496f-92c7-2b6af74f781a?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Base",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            ""
+          ]
+        },
+        "description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+      },
+      "response": [
+        {
+          "name": "Base",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                ""
+              ]
+            }
+          },
+          "_postman_previewlanguage": "text",
+          "header": [
+            {
+              "key": "content-type",
+              "value": "text/plain;charset=UTF-8"
+            },
+            {
+              "key": "content-length",
+              "value": "72"
+            },
+            {
+              "key": "date",
+              "value": "Thu, 22 Oct 2026 04:38:18 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "Test 1: Sistema de alquiler de vehículos funcionando con Spring Boot :)"
+        }
+      ]
+    },
+    {
+      "name": "Crear Vehiculo",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Successful POST request\", function () {\n    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\n});\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"marca\": \"Volvo\",\n  \"modelo\": \"XC60\",\n  \"placa\": \"P10901\",\n  \"categoria\": \"SUV\",\n  \"precioPorDia\": 70.00\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/vehiculos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "vehiculos"
+          ]
+        },
+        "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+      },
+      "response": [
+        {
+          "name": "Crear Vehiculo",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"marca\": \"Mazda\",\n  \"modelo\": \"CX-5\",\n  \"placa\": \"P10901\",\n  \"categoria\": \"SUV\",\n  \"precioPorDia\": 50.00\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/vehiculos",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "vehiculos"
+              ]
+            }
+          },
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "transfer-encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "date",
+              "value": "Thu, 22 Oct 2026 04:40:16 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"id\": 7,\n  \"marca\": \"Mazda\",\n  \"modelo\": \"CX-5\",\n  \"placa\": \"P10901\",\n  \"categoria\": \"SUV\",\n  \"precioPorDia\": 50,\n  \"estado\": \"DISPONIBLE\"\n}"
+        },
+        {
+          "name": "Crear Vehiculo",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"marca\": \"Volvo\",\n  \"modelo\": \"XC60\",\n  \"placa\": \"P10901\",\n  \"categoria\": \"SUV\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/vehiculos",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "vehiculos"
+              ]
+            }
+          },
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "transfer-encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "date",
+              "value": "Thu, 22 Oct 2026 04:44:09 GMT"
+            },
+            {
+              "key": "connection",
+              "value": "close"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"timestamp\": \"2026-10-21 22:44:09\",\n  \"status\": 400,\n  \"error\": \"Bad Request\",\n  \"message\": \"El precio por día es obligatorio.\",\n  \"path\": \"/api/vehiculos\"\n}"
+        },
+        {
+          "name": "Crear Vehiculo",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"marca\": \"Volvo\",\n  \"modelo\": \"XC60\",\n  \"placa\": \"P10901\",\n  \"categoria\": \"SUV\",\n  \"precioPorDia\": 70.00\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/vehiculos",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "vehiculos"
+              ]
+            }
+          },
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "transfer-encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "date",
+              "value": "Thu, 22 Oct 2026 04:44:38 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"timestamp\": \"2026-10-21 22:44:38\",\n  \"status\": 409,\n  \"error\": \"Conflict\",\n  \"message\": \"Ya existe un vehiculo registrado con la placa: P10901\",\n  \"path\": \"/api/vehiculos\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Obtener Vehiculos",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/vehiculos/20",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "vehiculos",
+            "20"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Obtener Vehiculos",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/vehiculos/20",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "vehiculos",
+                "20"
+              ]
+            }
+          },
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "transfer-encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "date",
+              "value": "Thu, 22 Oct 2026 04:45:18 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"timestamp\": \"2026-10-21 22:45:18\",\n  \"status\": 404,\n  \"error\": \"Not Found\",\n  \"message\": \"Vehiculo con ID 20 no encontrado.\",\n  \"path\": \"/api/vehiculos/20\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Cambio Estado de Vehiculo",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/vehiculos/6/estado?nuevoEstado=EN_MANTENIMIENTO",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "vehiculos",
+            "6",
+            "estado"
+          ],
+          "query": [
+            {
+              "key": "nuevoEstado",
+              "value": "EN_MANTENIMIENTO"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Mantenimientos",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/mantenimientos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "mantenimientos"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Get Mantenimientos",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/mantenimientos",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "mantenimientos"
+              ]
+            }
+          },
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "transfer-encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "date",
+              "value": "Thu, 22 Oct 2026 04:45:44 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "[\n  {\n    \"id\": 1,\n    \"vehiculoId\": 3,\n    \"placaVehiculo\": \"P456789\",\n    \"fechaInicio\": \"2026-10-20\",\n    \"fechaFin\": \"2026-10-24\",\n    \"descripcion\": \"Revisión periódica y cambio de aceite\",\n    \"costo\": 85\n  },\n  {\n    \"id\": 2,\n    \"vehiculoId\": 5,\n    \"placaVehiculo\": \"P654321\",\n    \"fechaInicio\": \"2026-11-05\",\n    \"fechaFin\": \"2026-11-06\",\n    \"descripcion\": \"Cambio de pastillas de freno y rectificación de discos\",\n    \"costo\": 150\n  },\n  {\n    \"id\": 3,\n    \"vehiculoId\": 1,\n    \"placaVehiculo\": \"P123456\",\n    \"fechaInicio\": \"2026-10-22\",\n    \"fechaFin\": \"2026-10-25\",\n    \"descripcion\": \"Cambio de pastillas de freno y aceite\",\n    \"costo\": 75.5\n  },\n  {\n    \"id\": 4,\n    \"vehiculoId\": 2,\n    \"placaVehiculo\": \"P987654\",\n    \"fechaInicio\": \"2026-10-22\",\n    \"fechaFin\": \"2026-10-25\",\n    \"descripcion\": \"Cambio de pastillas de freno y aceite\",\n    \"costo\": 75.5\n  }\n]"
+        }
+      ]
+    },
+    {
+      "name": "Crear Mantto",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"vehiculoId\": 2,\r\n  \"fechaInicio\": \"2026-10-22\",\r\n  \"fechaFin\": \"2026-10-25\",\r\n  \"descripcion\": \"Cambio de pastillas de freno y aceite\",\r\n  \"costo\": 75.50\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/mantenimientos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "mantenimientos"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Crear Mantto",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"vehiculoId\": 2,\r\n  \"fechaInicio\": \"2026-10-22\",\r\n  \"fechaFin\": \"2026-10-25\",\r\n  \"descripcion\": \"Cambio de pastillas de freno y aceite\",\r\n  \"costo\": 75.50\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/mantenimientos",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "mantenimientos"
+              ]
+            }
+          },
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "transfer-encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "date",
+              "value": "Thu, 22 Oct 2026 04:41:53 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"id\": 4,\n  \"vehiculoId\": 2,\n  \"placaVehiculo\": \"P987654\",\n  \"fechaInicio\": \"2026-10-22\",\n  \"fechaFin\": \"2026-10-25\",\n  \"descripcion\": \"Cambio de pastillas de freno y aceite\",\n  \"costo\": 75.5\n}"
+        }
+      ]
+    }
+  ]
+}
