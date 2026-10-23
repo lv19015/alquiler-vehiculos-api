@@ -21,3 +21,13 @@ VALUES (3, '2026-10-20', '2026-10-24', 'Revisión periódica y cambio de aceite'
 -- Inserción de un registro de mantenimiento/reparación para el vehículo 5
 INSERT INTO mantenimientos (vehiculo_id, fecha_inicio, fecha_fin, descripcion, costo)
 VALUES (5, '2026-11-05', '2026-11-06', 'Cambio de pastillas de freno y rectificación de discos', 150.00);
+
+-- Inserción de clientes iniciales de prueba
+INSERT INTO clientes (nombre, apellido, documento_identidad, correo, telefono, licencia_conducir)
+VALUES ('Carlos', 'Martínez', '04567890-1', 'carlos.martinez@example.com', '7788-1234', 'L-123456');
+
+INSERT INTO clientes (nombre, apellido, documento_identidad, correo, telefono, licencia_conducir)
+VALUES ('María', 'López', '03214567-8', 'maria.lopez@example.com', '7012-3456', 'L-654321');
+
+INSERT INTO clientes (nombre, apellido, documento_identidad, correo, telefono, licencia_conducir)
+VALUES ('Jorge', 'Hernández', '05123489-2', 'jorge.hernandez@example.com', '6234-5678', 'L-987654');
