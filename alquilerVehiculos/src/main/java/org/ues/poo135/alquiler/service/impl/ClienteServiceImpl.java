@@ -24,13 +24,13 @@ public class ClienteServiceImpl implements ClienteService {
         validarUnicidad(dto.getDocumentoIdentidad(), dto.getCorreo());
 
         Cliente cliente = Cliente.builder()
-            .nombre(dto.getNombre())
-            .apellido(dto.getApellido())
-            .documentoIdentidad(dto.getDocumentoIdentidad())
-            .correo(dto.getCorreo())
-            .telefono(dto.getTelefono())
-            .licenciaConducir(dto.getLicenciaConducir())
-            .build();
+                .nombre(dto.getNombre())
+                .apellido(dto.getApellido())
+                .documentoIdentidad(dto.getDocumentoIdentidad())
+                .correo(dto.getCorreo())
+                .telefono(dto.getTelefono())
+                .licenciaConducir(dto.getLicenciaConducir())
+                .build();
 
         return toResponseDTO(clienteRepository.save(cliente));
     }
@@ -38,9 +38,9 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     public List<ClienteResponseDTO> obtenerTodos() {
         return clienteRepository.findAll()
-            .stream()
-            .map(this::toResponseDTO)
-            .toList();
+                .stream()
+                .map(this::toResponseDTO)
+                .toList();
     }
 
     @Override
@@ -51,8 +51,8 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     public ClienteResponseDTO obtenerPorDocumento(String documentoIdentidad) {
         Cliente cliente = clienteRepository.findByDocumentoIdentidad(documentoIdentidad)
-            .orElseThrow(() -> new ResourceNotFoundException(
-                "Cliente con documento " + documentoIdentidad + " no encontrado."));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Cliente con documento " + documentoIdentidad + " no encontrado."));
         return toResponseDTO(cliente);
     }
 
@@ -64,15 +64,15 @@ public class ClienteServiceImpl implements ClienteService {
         if (!cliente.getDocumentoIdentidad().equals(dto.getDocumentoIdentidad())
                 && clienteRepository.existsByDocumentoIdentidad(dto.getDocumentoIdentidad())) {
             throw new ResponseStatusException(
-                HttpStatus.CONFLICT,
-                "El documento " + dto.getDocumentoIdentidad() + " ya esta registrado en otro cliente."
+                    HttpStatus.CONFLICT,
+                    "El documento " + dto.getDocumentoIdentidad() + " ya esta registrado en otro cliente."
             );
         }
         if (!cliente.getCorreo().equalsIgnoreCase(dto.getCorreo())
                 && clienteRepository.existsByCorreoIgnoreCase(dto.getCorreo())) {
             throw new ResponseStatusException(
-                HttpStatus.CONFLICT,
-                "El correo " + dto.getCorreo() + " ya esta registrado en otro cliente."
+                    HttpStatus.CONFLICT,
+                    "El correo " + dto.getCorreo() + " ya esta registrado en otro cliente."
             );
         }
 
@@ -108,33 +108,33 @@ public class ClienteServiceImpl implements ClienteService {
     private void validarUnicidad(String documentoIdentidad, String correo) {
         if (clienteRepository.existsByDocumentoIdentidad(documentoIdentidad)) {
             throw new ResponseStatusException(
-                HttpStatus.CONFLICT,
-                "Ya existe un cliente registrado con el documento: " + documentoIdentidad
+                    HttpStatus.CONFLICT,
+                    "Ya existe un cliente registrado con el documento: " + documentoIdentidad
             );
         }
         if (clienteRepository.existsByCorreoIgnoreCase(correo)) {
             throw new ResponseStatusException(
-                HttpStatus.CONFLICT,
-                "Ya existe un cliente registrado con el correo: " + correo
+                    HttpStatus.CONFLICT,
+                    "Ya existe un cliente registrado con el correo: " + correo
             );
         }
     }
 
     private Cliente buscarPorIdOLanzarError(Long id) {
         return clienteRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException(
-                "Cliente con ID " + id + " no encontrado."));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Cliente con ID " + id + " no encontrado."));
     }
 
     private ClienteResponseDTO toResponseDTO(Cliente c) {
         return ClienteResponseDTO.builder()
-            .id(c.getId())
-            .nombre(c.getNombre())
-            .apellido(c.getApellido())
-            .documentoIdentidad(c.getDocumentoIdentidad())
-            .correo(c.getCorreo())
-            .telefono(c.getTelefono())
-            .licenciaConducir(c.getLicenciaConducir())
-            .build();
+                .id(c.getId())
+                .nombre(c.getNombre())
+                .apellido(c.getApellido())
+                .documentoIdentidad(c.getDocumentoIdentidad())
+                .correo(c.getCorreo())
+                .telefono(c.getTelefono())
+                .licenciaConducir(c.getLicenciaConducir())
+                .build();
     }
 }

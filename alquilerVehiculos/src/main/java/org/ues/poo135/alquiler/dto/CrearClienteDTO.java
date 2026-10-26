@@ -16,7 +16,7 @@ public class CrearClienteDTO {
 
     @NotBlank(message = "El documento de identidad es obligatorio.")
     @Pattern(regexp = "^[A-Za-z0-9-]{5,20}$",
-             message = "El documento de identidad debe tener entre 5 y 20 caracteres alfanumericos o guiones.")
+            message = "El documento de identidad debe tener entre 5 y 20 caracteres alfanumericos o guiones.")
     private String documentoIdentidad;
 
     @NotBlank(message = "El correo es obligatorio.")
@@ -25,7 +25,7 @@ public class CrearClienteDTO {
 
     @NotBlank(message = "El telefono es obligatorio.")
     @Pattern(regexp = "^[0-9]{4}-?[0-9]{4}$",
-             message = "El telefono debe tener 8 digitos (ejemplo: 7777-1234).")
+            message = "El telefono debe tener 8 digitos (ejemplo: 7777-1234).")
     private String telefono;
 
     @NotBlank(message = "La licencia de conducir es obligatoria.")
