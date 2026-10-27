@@ -306,7 +306,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:8080/api/vehiculos/20",
+          "raw": "http://localhost:8080/api/vehiculos",
           "protocol": "http",
           "host": [
             "localhost"
@@ -314,8 +314,7 @@
           "port": "8080",
           "path": [
             "api",
-            "vehiculos",
-            "20"
+            "vehiculos"
           ]
         }
       },
@@ -550,6 +549,567 @@
           ],
           "cookie": [],
           "body": "{\n  \"id\": 4,\n  \"vehiculoId\": 2,\n  \"placaVehiculo\": \"P987654\",\n  \"fechaInicio\": \"2026-10-22\",\n  \"fechaFin\": \"2026-10-25\",\n  \"descripcion\": \"Cambio de pastillas de freno y aceite\",\n  \"costo\": 75.5\n}"
+        }
+      ]
+    },
+    {
+      "name": "Actualizar Vehiculo",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"marca\": \"Toyota\",\r\n  \"modelo\": \"Corolla 2026\",\r\n  \"placa\": \"P123456\",\r\n  \"categoria\": \"Sedan\",\r\n  \"precioPorDia\": 42.00\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/vehiculos/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "vehiculos",
+            "1"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Actualizar Vehiculo",
+          "originalRequest": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"marca\": \"Toyota\",\r\n  \"modelo\": \"Corolla 2026\",\r\n  \"placa\": \"P123456\",\r\n  \"categoria\": \"Sedan\",\r\n  \"precioPorDia\": 42.00\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/vehiculos/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "vehiculos",
+                "1"
+              ]
+            }
+          },
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "transfer-encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "date",
+              "value": "Mon, 26 Oct 2026 23:35:42 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"id\": 1,\n  \"marca\": \"Toyota\",\n  \"modelo\": \"Corolla 2026\",\n  \"placa\": \"P123456\",\n  \"categoria\": \"Sedan\",\n  \"precioPorDia\": 42,\n  \"estado\": \"DISPONIBLE\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Eliminar Vehiculo",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"marca\": \"Volvo\",\n  \"modelo\": \"XC60\",\n  \"placa\": \"P10901\",\n  \"categoria\": \"SUV\",\n  \"precioPorDia\": 70.00\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/vehiculos/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "vehiculos",
+            "1"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Eliminar Vehiculo",
+          "originalRequest": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"marca\": \"Volvo\",\n  \"modelo\": \"XC60\",\n  \"placa\": \"P10901\",\n  \"categoria\": \"SUV\",\n  \"precioPorDia\": 70.00\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/vehiculos/3",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "vehiculos",
+                "3"
+              ]
+            }
+          },
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "transfer-encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "date",
+              "value": "Mon, 26 Oct 2026 23:48:23 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"timestamp\": \"2026-10-26 17:48:23\",\n  \"status\": 409,\n  \"error\": \"Conflict\",\n  \"message\": \"No se puede eliminar el registro porque tiene otros datos asociados (mantenimientos o reservas).\",\n  \"path\": \"/api/vehiculos/3\"\n}"
+        },
+        {
+          "name": "Eliminar Vehiculo",
+          "originalRequest": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"marca\": \"Volvo\",\n  \"modelo\": \"XC60\",\n  \"placa\": \"P10901\",\n  \"categoria\": \"SUV\",\n  \"precioPorDia\": 70.00\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/vehiculos/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "vehiculos",
+                "1"
+              ]
+            }
+          },
+          "_postman_previewlanguage": "text",
+          "header": [
+            {
+              "key": "date",
+              "value": "Mon, 26 Oct 2026 23:48:54 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": ""
+        }
+      ]
+    },
+    {
+      "name": "Actualizar Mantto",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"vehiculoId\": 3,\r\n  \"fechaInicio\": \"2026-10-20\",\r\n  \"fechaFin\": \"2026-10-26\",\r\n  \"descripcion\": \"Revisión periódica, cambio de aceite y filtro de aire\",\r\n  \"costo\": 95.00\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/mantenimientos/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "mantenimientos",
+            "1"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Actualizar Mantto",
+          "originalRequest": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"vehiculoId\": 3,\r\n  \"fechaInicio\": \"2026-10-20\",\r\n  \"fechaFin\": \"2026-10-26\",\r\n  \"descripcion\": \"Revisión periódica, cambio de aceite y filtro de aire\",\r\n  \"costo\": 95.00\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/mantenimientos/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "mantenimientos",
+                "1"
+              ]
+            }
+          },
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "transfer-encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "date",
+              "value": "Mon, 26 Oct 2026 23:54:02 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"id\": 1,\n  \"vehiculoId\": 3,\n  \"placaVehiculo\": \"P456789\",\n  \"fechaInicio\": \"2026-10-20\",\n  \"fechaFin\": \"2026-10-26\",\n  \"descripcion\": \"Revisión periódica, cambio de aceite y filtro de aire\",\n  \"costo\": 95\n}"
+        }
+      ]
+    },
+    {
+      "name": "Eliminar Mantto",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"vehiculoId\": 2,\r\n  \"fechaInicio\": \"2026-10-22\",\r\n  \"fechaFin\": \"2026-10-25\",\r\n  \"descripcion\": \"Cambio de pastillas de freno y aceite\",\r\n  \"costo\": 75.50\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/mantenimientos/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "mantenimientos",
+            "1"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Eliminar Mantto",
+          "originalRequest": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"vehiculoId\": 2,\r\n  \"fechaInicio\": \"2026-10-22\",\r\n  \"fechaFin\": \"2026-10-25\",\r\n  \"descripcion\": \"Cambio de pastillas de freno y aceite\",\r\n  \"costo\": 75.50\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/mantenimientos/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "mantenimientos",
+                "1"
+              ]
+            }
+          },
+          "_postman_previewlanguage": "text",
+          "header": [
+            {
+              "key": "date",
+              "value": "Mon, 26 Oct 2026 23:55:29 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": ""
+        }
+      ]
+    },
+    {
+      "name": "Get Clientes",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/clientes",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "clientes"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Get Clientes",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/clientes",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "clientes"
+              ]
+            }
+          },
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "transfer-encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "date",
+              "value": "Mon, 26 Oct 2026 23:56:57 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "[\n  {\n    \"id\": 1,\n    \"nombre\": \"Carlos\",\n    \"apellido\": \"Martínez\",\n    \"documentoIdentidad\": \"04567890-1\",\n    \"correo\": \"carlos.martinez@example.com\",\n    \"telefono\": \"7788-1234\",\n    \"licenciaConducir\": \"L-123456\"\n  },\n  {\n    \"id\": 2,\n    \"nombre\": \"María\",\n    \"apellido\": \"López\",\n    \"documentoIdentidad\": \"03214567-8\",\n    \"correo\": \"maria.lopez@example.com\",\n    \"telefono\": \"7012-3456\",\n    \"licenciaConducir\": \"L-654321\"\n  },\n  {\n    \"id\": 3,\n    \"nombre\": \"Jorge\",\n    \"apellido\": \"Hernández\",\n    \"documentoIdentidad\": \"05123489-2\",\n    \"correo\": \"jorge.hernandez@example.com\",\n    \"telefono\": \"6234-5678\",\n    \"licenciaConducir\": \"L-987654\"\n  }\n]"
+        }
+      ]
+    },
+    {
+      "name": "Crear Cliente",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"nombre\": \"Abigail\",\r\n  \"apellido\": \"Rivas\",\r\n  \"documentoIdentidad\": \"06120056-7\",\r\n  \"correo\": \"abigail.rivas@gmail.com\",\r\n  \"telefono\": \"7890-1234\",\r\n  \"licenciaConducir\": \"L-554433\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/clientes",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "clientes"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Crear Cliente",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nombre\": \"Abigail\",\r\n  \"apellido\": \"Rivas\",\r\n  \"documentoIdentidad\": \"06120056-7\",\r\n  \"correo\": \"abigail.rivas@gmail.com\",\r\n  \"telefono\": \"7890-1234\",\r\n  \"licenciaConducir\": \"L-554433\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/clientes",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "clientes"
+              ]
+            }
+          },
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "transfer-encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "date",
+              "value": "Mon, 26 Oct 2026 23:59:26 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"id\": 4,\n  \"nombre\": \"Abigail\",\n  \"apellido\": \"Rivas\",\n  \"documentoIdentidad\": \"06120056-7\",\n  \"correo\": \"abigail.rivas@gmail.com\",\n  \"telefono\": \"7890-1234\",\n  \"licenciaConducir\": \"L-554433\"\n}"
         }
       ]
     }
