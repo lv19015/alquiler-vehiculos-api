@@ -2,135 +2,43 @@
   "info": {
     "_postman_id": "ba59ae30-5157-496f-92c7-2b6af74f781a",
     "name": "Alquiler de Vehiculos",
-    "description": "[Learn more about Postman Collections.](https://learning.postman.com/docs/collections/collections-overview/)",
+    "description": "Pruebas de todos los modulos: clientes, vehiculos, mantenimientos y reservas. Ejecutar cada carpeta en orden (Runner).",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "59127106",
     "_collection_link": "https://go.postman.co/collection/59127106-ba59ae30-5157-496f-92c7-2b6af74f781a?source=collection_link"
   },
   "item": [
     {
-      "name": "Base",
-      "event": [
+      "name": "1. Clientes",
+      "description": "Autocontenida: crea sus propios datos con valores aleatorios, se puede ejecutar varias veces.",
+      "item": [
         {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});"
-            ]
-          }
-        }
-      ],
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "http://localhost:8080/",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "8080",
-          "path": [
-            ""
-          ]
-        },
-        "description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
-      },
-      "response": [
-        {
-          "name": "Base",
-          "originalRequest": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "http://localhost:8080/",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8080",
-              "path": [
-                ""
-              ]
-            }
-          },
-          "_postman_previewlanguage": "text",
-          "header": [
+          "name": "01 Crear cliente (201)",
+          "event": [
             {
-              "key": "content-type",
-              "value": "text/plain;charset=UTF-8"
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const rnd = Math.floor(10000 + Math.random() * 90000);",
+                  "pm.collectionVariables.set('docCliente', '0' + rnd + '-1');",
+                  "pm.collectionVariables.set('correoCliente', 'cliente' + rnd + '@example.com');"
+                ]
+              }
             },
             {
-              "key": "content-length",
-              "value": "72"
-            },
-            {
-              "key": "date",
-              "value": "Thu, 22 Oct 2026 04:38:18 GMT"
-            },
-            {
-              "key": "keep-alive",
-              "value": "timeout=60"
-            },
-            {
-              "key": "connection",
-              "value": "keep-alive"
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Codigo 201\", function () { pm.response.to.have.status(201); });",
+                  "if (pm.response.code < 300) { pm.collectionVariables.set(\"clienteId\", pm.response.json().id); }",
+                  "pm.test(\"El correo coincide\", function () { const b = pm.response.json(); pm.expect(b.correo === pm.collectionVariables.get('correoCliente')).to.be.true; });"
+                ]
+              }
             }
           ],
-          "cookie": [],
-          "body": "Test 1: Sistema de alquiler de vehículos funcionando con Spring Boot :)"
-        }
-      ]
-    },
-    {
-      "name": "Crear Vehiculo",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test(\"Successful POST request\", function () {\n    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\n});\n"
-            ]
-          }
-        }
-      ],
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"marca\": \"Volvo\",\n  \"modelo\": \"XC60\",\n  \"placa\": \"P10901\",\n  \"categoria\": \"SUV\",\n  \"precioPorDia\": 70.00\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "http://localhost:8080/api/vehiculos",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "8080",
-          "path": [
-            "api",
-            "vehiculos"
-          ]
-        },
-        "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
-      },
-      "response": [
-        {
-          "name": "Crear Vehiculo",
-          "originalRequest": {
+          "request": {
             "method": "POST",
             "header": [
               {
@@ -138,57 +46,43 @@
                 "value": "application/json"
               }
             ],
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clientes"
+              ]
+            },
+            "description": "Crea un cliente con documento y correo unicos. Guarda el id en {{clienteId}}.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"marca\": \"Mazda\",\n  \"modelo\": \"CX-5\",\n  \"placa\": \"P10901\",\n  \"categoria\": \"SUV\",\n  \"precioPorDia\": 50.00\n}",
+              "raw": "{\n  \"nombre\": \"Carlos\",\n  \"apellido\": \"Martinez\",\n  \"documentoIdentidad\": \"{{docCliente}}\",\n  \"correo\": \"{{correoCliente}}\",\n  \"telefono\": \"7788-1234\",\n  \"licenciaConducir\": \"L-123456\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
-            },
-            "url": {
-              "raw": "http://localhost:8080/api/vehiculos",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8080",
-              "path": [
-                "api",
-                "vehiculos"
-              ]
             }
           },
-          "_postman_previewlanguage": "json",
-          "header": [
-            {
-              "key": "content-type",
-              "value": "application/json"
-            },
-            {
-              "key": "transfer-encoding",
-              "value": "chunked"
-            },
-            {
-              "key": "date",
-              "value": "Thu, 22 Oct 2026 04:40:16 GMT"
-            },
-            {
-              "key": "keep-alive",
-              "value": "timeout=60"
-            },
-            {
-              "key": "connection",
-              "value": "keep-alive"
-            }
-          ],
-          "cookie": [],
-          "body": "{\n  \"id\": 7,\n  \"marca\": \"Mazda\",\n  \"modelo\": \"CX-5\",\n  \"placa\": \"P10901\",\n  \"categoria\": \"SUV\",\n  \"precioPorDia\": 50,\n  \"estado\": \"DISPONIBLE\"\n}"
+          "response": []
         },
         {
-          "name": "Crear Vehiculo",
-          "originalRequest": {
+          "name": "02 Crear cliente con documento duplicado (409)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Codigo 409\", function () { pm.response.to.have.status(409); });"
+                ]
+              }
+            }
+          ],
+          "request": {
             "method": "POST",
             "header": [
               {
@@ -196,53 +90,87 @@
                 "value": "application/json"
               }
             ],
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clientes"
+              ]
+            },
+            "description": "Mismo documento y correo que el cliente anterior.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"marca\": \"Volvo\",\n  \"modelo\": \"XC60\",\n  \"placa\": \"P10901\",\n  \"categoria\": \"SUV\"\n}",
+              "raw": "{\n  \"nombre\": \"Carlos\",\n  \"apellido\": \"Martinez\",\n  \"documentoIdentidad\": \"{{docCliente}}\",\n  \"correo\": \"{{correoCliente}}\",\n  \"telefono\": \"7788-1234\",\n  \"licenciaConducir\": \"L-123456\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
-            },
-            "url": {
-              "raw": "http://localhost:8080/api/vehiculos",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8080",
-              "path": [
-                "api",
-                "vehiculos"
-              ]
             }
           },
-          "_postman_previewlanguage": "json",
-          "header": [
-            {
-              "key": "content-type",
-              "value": "application/json"
-            },
-            {
-              "key": "transfer-encoding",
-              "value": "chunked"
-            },
-            {
-              "key": "date",
-              "value": "Thu, 22 Oct 2026 04:44:09 GMT"
-            },
-            {
-              "key": "connection",
-              "value": "close"
-            }
-          ],
-          "cookie": [],
-          "body": "{\n  \"timestamp\": \"2026-10-21 22:44:09\",\n  \"status\": 400,\n  \"error\": \"Bad Request\",\n  \"message\": \"El precio por día es obligatorio.\",\n  \"path\": \"/api/vehiculos\"\n}"
+          "response": []
         },
         {
-          "name": "Crear Vehiculo",
-          "originalRequest": {
+          "name": "03 Crear cliente con correo duplicado (409)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Codigo 409\", function () { pm.response.to.have.status(409); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clientes"
+              ]
+            },
+            "description": "Documento distinto pero el mismo correo.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Carlos\",\n  \"apellido\": \"Martinez\",\n  \"documentoIdentidad\": \"X{{docCliente}}\",\n  \"correo\": \"{{correoCliente}}\",\n  \"telefono\": \"7788-1234\",\n  \"licenciaConducir\": \"L-123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "04 Crear cliente con datos invalidos (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Codigo 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ],
+          "request": {
             "method": "POST",
             "header": [
               {

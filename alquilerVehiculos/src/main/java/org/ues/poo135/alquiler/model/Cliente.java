@@ -32,7 +32,4 @@ public class Cliente {
 
     @Column(nullable = false)
     private String licenciaConducir;
-
-    // TODO: Agregar @OneToMany hacia Reserva cuando se implemente ese modulo
-    // (un cliente realiza 0..* reservas, segun el diagrama ER).
 }

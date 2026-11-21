@@ -10,6 +10,7 @@ import org.ues.poo135.alquiler.exception.ResourceNotFoundException;
 import org.ues.poo135.alquiler.model.Cliente;
 import org.ues.poo135.alquiler.repository.ClienteRepository;
 import org.ues.poo135.alquiler.service.ClienteService;
+import org.ues.poo135.alquiler.repository.ReservaRepository;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ import java.util.List;
 public class ClienteServiceImpl implements ClienteService {
 
     private final ClienteRepository clienteRepository;
+    private final ReservaRepository reservaRepository;
 
     @Override
     public ClienteResponseDTO crearCliente(CrearClienteDTO dto) {
@@ -88,20 +90,17 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Override
     public void eliminarCliente(Long id) {
-        Cliente cliente = buscarPorIdOLanzarError(id);
+    Cliente cliente = buscarPorIdOLanzarError(id);
 
-        /*
-         * TODO: Reactivar cuando se implemente la entidad Reserva.
-         * No se debe eliminar un cliente que tenga reservas activas:
-         *
-         * if (reservaRepository.existsByClienteIdAndEstado(id, EstadoReserva.CONFIRMADA)) {
-         *     throw new ResponseStatusException(HttpStatus.CONFLICT,
-         *         "No se puede eliminar un cliente con reservas activas.");
-         * }
-         */
-
-        clienteRepository.delete(cliente);
+    if (reservaRepository.existsByClienteId(id)) {
+        throw new ResponseStatusException(
+                HttpStatus.CONFLICT,
+                "No se puede eliminar un cliente que tiene reservas registradas."
+        );
     }
+
+    clienteRepository.delete(cliente);
+}
 
     // ── helpers ─────────────────────────────────────────────────────────────
 
