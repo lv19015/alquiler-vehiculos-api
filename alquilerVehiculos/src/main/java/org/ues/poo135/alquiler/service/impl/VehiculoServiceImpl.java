@@ -10,6 +10,8 @@ import org.ues.poo135.alquiler.service.VehiculoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import org.ues.poo135.alquiler.repository.ReservaRepository;
+import org.ues.poo135.alquiler.model.Reserva.EstadoReserva;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.List;
 public class VehiculoServiceImpl implements VehiculoService {
 
     private final VehiculoRepository vehiculoRepository;
+    private final ReservaRepository reservaRepository;
 
     @Override
     public VehiculoResponseDTO crearVehiculo(CrearVehiculoDTO dto) {
@@ -79,19 +82,18 @@ public class VehiculoServiceImpl implements VehiculoService {
     @Override
     public VehiculoResponseDTO cambiarEstado(Long id, EstadoVehiculo nuevoEstado) {
         Vehiculo vehiculo = buscarPorIdOLanzarError(id);
-
-        // No se puede marcar como DISPONIBLE un vehiculo que tiene reservas activas
+        // Solo se bloquea si hay una reserva activa; se libera cancelandola o finalizandola
         if (nuevoEstado == EstadoVehiculo.DISPONIBLE
-                && vehiculo.getEstado() == EstadoVehiculo.ALQUILADO) {
-            throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                "No se puede marcar como DISPONIBLE un vehiculo con reserva activa. Finalize la reserva primero."
-            );
+            && reservaRepository.existsByVehiculoIdAndEstado(id, EstadoReserva.ACTIVA)) {
+                throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "El vehiculo tiene una reserva activa. Cancele o finalice la reserva primero."
+          );
         }
 
-        vehiculo.setEstado(nuevoEstado);
-        return toResponseDTO(vehiculoRepository.save(vehiculo));
-    }
+    vehiculo.setEstado(nuevoEstado);
+    return toResponseDTO(vehiculoRepository.save(vehiculo));
+}
 
     @Override
     public void eliminarVehiculo(Long id) {
@@ -103,6 +105,12 @@ public class VehiculoServiceImpl implements VehiculoService {
                 "No se puede eliminar un vehiculo que esta actualmente alquilado."
             );
         }
+        if (reservaRepository.existsByVehiculoId(id)) {
+    throw new ResponseStatusException(
+        HttpStatus.CONFLICT,
+        "No se puede eliminar un vehiculo que tiene reservas registradas."
+    );
+   }
 
         vehiculoRepository.delete(vehiculo);
     }
@@ -117,41 +125,19 @@ public class VehiculoServiceImpl implements VehiculoService {
 
 
     @Override
-    public boolean verificarDisponibilidad(
-            Long vehiculoId,
-            LocalDate fechaInicio,
-            LocalDate fechaFin) {
+public boolean verificarDisponibilidad(Long vehiculoId, LocalDate fechaInicio, LocalDate fechaFin) {
+    Vehiculo vehiculo = buscarPorIdOLanzarError(vehiculoId);
 
-        Vehiculo vehiculo = buscarPorIdOLanzarError(vehiculoId);
-
-        if (!fechaInicio.isBefore(fechaFin)) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "La fecha de inicio debe ser anterior a la fecha de fin."
-            );
-        }
-
-        if (fechaInicio.isBefore(LocalDate.now())) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "La fecha de inicio no puede ser en el pasado."
-            );
-        }
-
-        /*
-         * TODO: Reactivar cuando se implemente la entidad Reserva.
-         *
-         * La verificación de disponibilidad por rango de fechas
-         * requiere consultar las reservas existentes.
-         *
-         * return vehiculoRepository.estaDisponibleEnFechas(
-         *     vehiculoId, fechaInicio, fechaFin
-         * );
-         */
-
-        // Comprobación temporal: solo considera el estado del vehículo.
-        return vehiculo.getEstado() == EstadoVehiculo.DISPONIBLE;
+    if (!fechaInicio.isBefore(fechaFin)) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST,
+            "La fecha de inicio debe ser anterior a la fecha de fin."
+        );
     }
+
+    return vehiculo.getEstado() == EstadoVehiculo.DISPONIBLE
+        && !reservaRepository.existeReservaActivaEnRango(vehiculoId, fechaInicio, fechaFin, -1L);
+}
 
 
     // ── helpers ─────────────────────────────────────────────────────────────
