@@ -88,4 +88,20 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    // Maneja violaciones de integridad en la BD
+    // para cuando se intente borrar algo que tiene llaves foráneas asociadas
+    @ExceptionHandler(org.springframework.dao.DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponseDTO> handleDataIntegrityViolationException(
+            org.springframework.dao.DataIntegrityViolationException ex, HttpServletRequest request) {
+
+        ErrorResponseDTO error = ErrorResponseDTO.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.CONFLICT.value())
+                .error(HttpStatus.CONFLICT.getReasonPhrase())
+                .message("No se puede eliminar el registro porque tiene otros datos asociados (mantenimientos o reservas).")
+                .path(request.getRequestURI())
+                .build();
+
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
 }
