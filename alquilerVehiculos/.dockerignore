@@ -1,0 +1,14 @@
+# Archivos que Docker no necesita para construir la imagen
+build/
+.gradle/
+.git
+.gitignore
+.gitattributes
+.idea/
+.vscode/
+.settings/
+.project
+.classpath
+bin/
+out/
+*.md
