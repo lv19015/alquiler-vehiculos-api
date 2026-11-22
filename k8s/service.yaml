@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: alquiler-vehiculos-service
+  labels:
+    app: alquiler-vehiculos
+spec:
+  # LoadBalancer en Docker Desktop expone el servicio en localhost
+  type: LoadBalancer
+  selector:
+    app: alquiler-vehiculos
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
