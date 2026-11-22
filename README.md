@@ -67,7 +67,22 @@ API REST desarrollada con Spring Boot para la gestión y automatización del alq
 * `GET /api/mantenimientos/{id}` - Consultar mantenimiento por ID.
 * `PUT /api/mantenimientos/{id}` - Actualizar registro de mantenimiento.
 * `DELETE /api/mantenimientos/{id}` - Eliminar registro de mantenimiento.
-### Clientes y Reservas *(En desarrollo)*
+
+### Clientes (`/api/clientes`)
+* `POST /api/clientes` - Registrar un cliente nuevo.
+* `GET /api/clientes` - Listar todos los clientes.
+* `GET /api/clientes/{id}` - Obtener cliente por ID.
+* `GET /api/clientes/documento/{documentoIdentidad}` - Buscar cliente por documento de identidad.
+* `PUT /api/clientes/{id}` - Actualizar datos del cliente.
+* `DELETE /api/clientes/{id}` - Eliminar un cliente.
+
+**Campos del cliente:** `nombre`, `apellido`, `documentoIdentidad` (único), `correo` (único), `telefono` y `licenciaConducir`.
+
+**Validaciones:** todos los campos son obligatorios; el correo debe tener formato válido; el teléfono debe tener 8 dígitos (ejemplo: `7777-1234`); el documento de identidad debe tener entre 5 y 20 caracteres alfanuméricos o guiones.
+
+**Respuestas:** `201` al crear, `200` al consultar o actualizar, `204` al eliminar, `400` por datos inválidos, `404` si el cliente no existe y `409` si el documento o el correo ya están registrados.
+
+### Reservas *(En desarrollo)*
 
 ## Manejo de Excepciones
 

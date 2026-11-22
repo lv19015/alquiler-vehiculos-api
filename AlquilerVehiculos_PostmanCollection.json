@@ -178,2683 +178,6 @@
                 "value": "application/json"
               }
             ],
-            "url": {
-              "raw": "{{baseUrl}}/api/clientes",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "clientes"
-              ]
-            },
-            "description": "Fallan @NotBlank, @Pattern y @Email del DTO.",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"nombre\": \"\",\n  \"apellido\": \"\",\n  \"documentoIdentidad\": \"1\",\n  \"correo\": \"no-es-un-correo\",\n  \"telefono\": \"123\",\n  \"licenciaConducir\": \"\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "05 Listar clientes (200)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 200\", function () { pm.response.to.have.status(200); });",
-                  "pm.test(\"Devuelve una lista\", function () { const b = pm.response.json(); pm.expect(Array.isArray(b) && b.length > 0).to.be.true; });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/clientes",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "clientes"
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "06 Obtener cliente por ID (200)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 200\", function () { pm.response.to.have.status(200); });",
-                  "pm.test(\"El id coincide\", function () { const b = pm.response.json(); pm.expect(String(b.id) === String(pm.collectionVariables.get('clienteId'))).to.be.true; });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/clientes/{{clienteId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "clientes",
-                "{{clienteId}}"
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "07 Obtener cliente por documento (200)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 200\", function () { pm.response.to.have.status(200); });",
-                  "pm.test(\"El documento coincide\", function () { const b = pm.response.json(); pm.expect(b.documentoIdentidad === pm.collectionVariables.get('docCliente')).to.be.true; });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/clientes/documento/{{docCliente}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "clientes",
-                "documento",
-                "{{docCliente}}"
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "08 Obtener cliente inexistente (404)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 404\", function () { pm.response.to.have.status(404); });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/clientes/999999",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "clientes",
-                "999999"
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "09 Actualizar cliente (200)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 200\", function () { pm.response.to.have.status(200); });",
-                  "pm.test(\"El nombre cambio\", function () { const b = pm.response.json(); pm.expect(b.nombre === 'Carlos Alberto').to.be.true; });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/clientes/{{clienteId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "clientes",
-                "{{clienteId}}"
-              ]
-            },
-            "description": "",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Carlos Alberto\",\n  \"apellido\": \"Martinez\",\n  \"documentoIdentidad\": \"{{docCliente}}\",\n  \"correo\": \"{{correoCliente}}\",\n  \"telefono\": \"7799-4321\",\n  \"licenciaConducir\": \"L-123456\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "10 Actualizar cliente inexistente (404)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 404\", function () { pm.response.to.have.status(404); });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/clientes/999999",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "clientes",
-                "999999"
-              ]
-            },
-            "description": "",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Carlos Alberto\",\n  \"apellido\": \"Martinez\",\n  \"documentoIdentidad\": \"{{docCliente}}\",\n  \"correo\": \"{{correoCliente}}\",\n  \"telefono\": \"7799-4321\",\n  \"licenciaConducir\": \"L-123456\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "11 Crear cliente temporal (201)",
-          "event": [
-            {
-              "listen": "prerequest",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "const rnd = Math.floor(10000 + Math.random() * 90000);",
-                  "pm.collectionVariables.set('docClienteTmp', '7' + rnd + '-2');",
-                  "pm.collectionVariables.set('correoClienteTmp', 'tmp' + rnd + '@example.com');"
-                ]
-              }
-            },
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 201\", function () { pm.response.to.have.status(201); });",
-                  "if (pm.response.code < 300) { pm.collectionVariables.set(\"clienteTmpId\", pm.response.json().id); }"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/clientes",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "clientes"
-              ]
-            },
-            "description": "Cliente desechable para probar el DELETE.",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Carlos\",\n  \"apellido\": \"Martinez\",\n  \"documentoIdentidad\": \"{{docClienteTmp}}\",\n  \"correo\": \"{{correoClienteTmp}}\",\n  \"telefono\": \"7788-1234\",\n  \"licenciaConducir\": \"L-123456\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "12 Eliminar cliente (204)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 204\", function () { pm.response.to.have.status(204); });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/clientes/{{clienteTmpId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "clientes",
-                "{{clienteTmpId}}"
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "13 Eliminar cliente ya eliminado (404)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 404\", function () { pm.response.to.have.status(404); });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/clientes/{{clienteTmpId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "clientes",
-                "{{clienteTmpId}}"
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "2. Vehículos",
-      "description": "Autocontenida. Termina con el vehículo en estado DISPONIBLE.",
-      "item": [
-        {
-          "name": "01 Crear vehículo (201)",
-          "event": [
-            {
-              "listen": "prerequest",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "const rnd = Math.floor(10000 + Math.random() * 90000);",
-                  "pm.collectionVariables.set('placaVehiculo', 'P' + rnd);"
-                ]
-              }
-            },
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 201\", function () { pm.response.to.have.status(201); });",
-                  "if (pm.response.code < 300) { pm.collectionVariables.set(\"vehiculoId\", pm.response.json().id); }",
-                  "pm.test(\"Estado inicial DISPONIBLE\", function () { const b = pm.response.json(); pm.expect(b.estado === 'DISPONIBLE').to.be.true; });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/vehiculos",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "vehiculos"
-              ]
-            },
-            "description": "La placa se genera aleatoria. Guarda el id en {{vehiculoId}}.",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"marca\": \"Toyota\",\n  \"modelo\": \"Hilux\",\n  \"placa\": \"{{placaVehiculo}}\",\n  \"categoria\": \"Pickup\",\n  \"precioPorDia\": 65.00\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "02 Crear vehículo con placa duplicada (409)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 409\", function () { pm.response.to.have.status(409); });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/vehiculos",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "vehiculos"
-              ]
-            },
-            "description": "",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"marca\": \"Toyota\",\n  \"modelo\": \"Hilux\",\n  \"placa\": \"{{placaVehiculo}}\",\n  \"categoria\": \"Pickup\",\n  \"precioPorDia\": 65.00\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "03 Crear vehículo con datos inválidos (400)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 400\", function () { pm.response.to.have.status(400); });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/vehiculos",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "vehiculos"
-              ]
-            },
-            "description": "",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"marca\": \"\",\n  \"modelo\": \"\",\n  \"placa\": \"x\",\n  \"categoria\": \"\",\n  \"precioPorDia\": -5\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "04 Listar vehículos (200)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 200\", function () { pm.response.to.have.status(200); });",
-                  "pm.test(\"Devuelve una lista\", function () { const b = pm.response.json(); pm.expect(Array.isArray(b) && b.length > 0).to.be.true; });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/vehiculos",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "vehiculos"
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "05 Obtener vehículo por ID (200)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 200\", function () { pm.response.to.have.status(200); });",
-                  "pm.test(\"El id coincide\", function () { const b = pm.response.json(); pm.expect(String(b.id) === String(pm.collectionVariables.get('vehiculoId'))).to.be.true; });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/vehiculos/{{vehiculoId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "vehiculos",
-                "{{vehiculoId}}"
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "06 Obtener vehículo inexistente (404)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 404\", function () { pm.response.to.have.status(404); });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/vehiculos/999999",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "vehiculos",
-                "999999"
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "07 Listar vehículos disponibles (200)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 200\", function () { pm.response.to.have.status(200); });",
-                  "pm.test(\"Incluye el vehiculo creado\", function () { const b = pm.response.json(); pm.expect(b.some(v => String(v.id) === String(pm.collectionVariables.get('vehiculoId')))).to.be.true; });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/vehiculos/disponibles",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "vehiculos",
-                "disponibles"
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "08 Consultar disponibilidad por fechas (200)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 200\", function () { pm.response.to.have.status(200); });",
-                  "pm.test(\"disponible = true\", function () { const b = pm.response.json(); pm.expect(b.disponible === true).to.be.true; });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/vehiculos/{{vehiculoId}}/disponibilidad?fechaInicio={{fechaInicio}}&fechaFin={{fechaFin}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "vehiculos",
-                "{{vehiculoId}}",
-                "disponibilidad"
-              ],
-              "query": [
-                {
-                  "key": "fechaInicio",
-                  "value": "{{fechaInicio}}"
-                },
-                {
-                  "key": "fechaFin",
-                  "value": "{{fechaFin}}"
-                }
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "09 Disponibilidad con fechas invertidas (400)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 400\", function () { pm.response.to.have.status(400); });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/vehiculos/{{vehiculoId}}/disponibilidad?fechaInicio={{fechaFin}}&fechaFin={{fechaInicio}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "vehiculos",
-                "{{vehiculoId}}",
-                "disponibilidad"
-              ],
-              "query": [
-                {
-                  "key": "fechaInicio",
-                  "value": "{{fechaFin}}"
-                },
-                {
-                  "key": "fechaFin",
-                  "value": "{{fechaInicio}}"
-                }
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "10 Actualizar vehículo (200)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 200\", function () { pm.response.to.have.status(200); });",
-                  "pm.test(\"El precio cambio\", function () { const b = pm.response.json(); pm.expect(b.precioPorDia === 70).to.be.true; });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/vehiculos/{{vehiculoId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "vehiculos",
-                "{{vehiculoId}}"
-              ]
-            },
-            "description": "",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"marca\": \"Toyota\",\n  \"modelo\": \"Hilux\",\n  \"placa\": \"{{placaVehiculo}}\",\n  \"categoria\": \"Pickup\",\n  \"precioPorDia\": 70.00\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "11 Cambiar estado a EN_MANTENIMIENTO (200)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 200\", function () { pm.response.to.have.status(200); });",
-                  "pm.test(\"Estado EN_MANTENIMIENTO\", function () { const b = pm.response.json(); pm.expect(b.estado === 'EN_MANTENIMIENTO').to.be.true; });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "PATCH",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/vehiculos/{{vehiculoId}}/estado?nuevoEstado=EN_MANTENIMIENTO",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "vehiculos",
-                "{{vehiculoId}}",
-                "estado"
-              ],
-              "query": [
-                {
-                  "key": "nuevoEstado",
-                  "value": "EN_MANTENIMIENTO"
-                }
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "12 Disponibilidad en mantenimiento (200, false)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 200\", function () { pm.response.to.have.status(200); });",
-                  "pm.test(\"disponible = false\", function () { const b = pm.response.json(); pm.expect(b.disponible === false).to.be.true; });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/vehiculos/{{vehiculoId}}/disponibilidad?fechaInicio={{fechaInicio}}&fechaFin={{fechaFin}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "vehiculos",
-                "{{vehiculoId}}",
-                "disponibilidad"
-              ],
-              "query": [
-                {
-                  "key": "fechaInicio",
-                  "value": "{{fechaInicio}}"
-                },
-                {
-                  "key": "fechaFin",
-                  "value": "{{fechaFin}}"
-                }
-              ]
-            },
-            "description": "Un vehiculo en mantenimiento no esta disponible aunque no tenga reservas."
-          },
-          "response": []
-        },
-        {
-          "name": "13 Cambiar estado a DISPONIBLE (200)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 200\", function () { pm.response.to.have.status(200); });",
-                  "pm.test(\"Estado DISPONIBLE\", function () { const b = pm.response.json(); pm.expect(b.estado === 'DISPONIBLE').to.be.true; });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "PATCH",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/vehiculos/{{vehiculoId}}/estado?nuevoEstado=DISPONIBLE",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "vehiculos",
-                "{{vehiculoId}}",
-                "estado"
-              ],
-              "query": [
-                {
-                  "key": "nuevoEstado",
-                  "value": "DISPONIBLE"
-                }
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "14 Cambiar estado de vehículo inexistente (404)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 404\", function () { pm.response.to.have.status(404); });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "PATCH",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/vehiculos/999999/estado?nuevoEstado=DISPONIBLE",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "vehiculos",
-                "999999",
-                "estado"
-              ],
-              "query": [
-                {
-                  "key": "nuevoEstado",
-                  "value": "DISPONIBLE"
-                }
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "15 Crear vehículo temporal (201)",
-          "event": [
-            {
-              "listen": "prerequest",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "const rnd = Math.floor(10000 + Math.random() * 90000);",
-                  "pm.collectionVariables.set('placaTmp', 'T' + rnd);"
-                ]
-              }
-            },
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 201\", function () { pm.response.to.have.status(201); });",
-                  "if (pm.response.code < 300) { pm.collectionVariables.set(\"vehiculoTmpId\", pm.response.json().id); }"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/vehiculos",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "vehiculos"
-              ]
-            },
-            "description": "Vehiculo desechable para probar el DELETE.",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"marca\": \"Toyota\",\n  \"modelo\": \"Hilux\",\n  \"placa\": \"{{placaTmp}}\",\n  \"categoria\": \"Pickup\",\n  \"precioPorDia\": 65.00\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "16 Eliminar vehículo (204)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 204\", function () { pm.response.to.have.status(204); });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/vehiculos/{{vehiculoTmpId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "vehiculos",
-                "{{vehiculoTmpId}}"
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "17 Eliminar vehículo ya eliminado (404)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 404\", function () { pm.response.to.have.status(404); });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/vehiculos/{{vehiculoTmpId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "vehiculos",
-                "{{vehiculoTmpId}}"
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "3. Mantenimientos",
-      "description": "Autocontenida. Los codigos de create/update/delete aceptan 200 o 201/204 y los 400 asumen validaciones en el DTO de mantenimiento; ajustalos si tu controlador responde distinto.",
-      "item": [
-        {
-          "name": "01 Preparar: crear vehículo (201)",
-          "event": [
-            {
-              "listen": "prerequest",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "const rnd = Math.floor(10000 + Math.random() * 90000);",
-                  "pm.collectionVariables.set('placaMantto', 'M' + rnd);"
-                ]
-              }
-            },
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 201\", function () { pm.response.to.have.status(201); });",
-                  "if (pm.response.code < 300) { pm.collectionVariables.set(\"manttoVehiculoId\", pm.response.json().id); }"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/vehiculos",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "vehiculos"
-              ]
-            },
-            "description": "",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"marca\": \"Honda\",\n  \"modelo\": \"Civic\",\n  \"placa\": \"{{placaMantto}}\",\n  \"categoria\": \"Sedan\",\n  \"precioPorDia\": 45.00\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "02 Crear mantenimiento (201)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo esperado 200/201\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
-                  "if (pm.response.code < 300) { pm.collectionVariables.set(\"manttoId\", pm.response.json().id); }"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/mantenimientos",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "mantenimientos"
-              ]
-            },
-            "description": "Guarda el id en {{manttoId}}.",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"vehiculoId\": {{manttoVehiculoId}},\n  \"fechaInicio\": \"{{fechaInicio}}\",\n  \"fechaFin\": \"{{fechaFin}}\",\n  \"descripcion\": \"Cambio de aceite y revision de frenos\",\n  \"costo\": 85.50\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "03 Vehículo pasa a EN_MANTENIMIENTO (200)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 200\", function () { pm.response.to.have.status(200); });",
-                  "pm.test(\"Estado EN_MANTENIMIENTO\", function () { const b = pm.response.json(); pm.expect(b.estado === 'EN_MANTENIMIENTO').to.be.true; });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/vehiculos/{{manttoVehiculoId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "vehiculos",
-                "{{manttoVehiculoId}}"
-              ]
-            },
-            "description": "Segun el README, registrar un mantenimiento cambia el estado del vehiculo."
-          },
-          "response": []
-        },
-        {
-          "name": "04 Mantenimiento con vehículo inexistente (404)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 404\", function () { pm.response.to.have.status(404); });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/mantenimientos",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "mantenimientos"
-              ]
-            },
-            "description": "",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"vehiculoId\": 999999,\n  \"fechaInicio\": \"{{fechaInicio}}\",\n  \"fechaFin\": \"{{fechaFin}}\",\n  \"descripcion\": \"Cambio de aceite y revision de frenos\",\n  \"costo\": 85.50\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "05 Mantenimiento con datos inválidos (400)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 400\", function () { pm.response.to.have.status(400); });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/mantenimientos",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "mantenimientos"
-              ]
-            },
-            "description": "",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"descripcion\": \"\",\n  \"costo\": -10\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "06 Listar mantenimientos (200)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 200\", function () { pm.response.to.have.status(200); });",
-                  "pm.test(\"Devuelve una lista\", function () { const b = pm.response.json(); pm.expect(Array.isArray(b) && b.length > 0).to.be.true; });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/mantenimientos",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "mantenimientos"
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "07 Obtener mantenimiento por ID (200)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 200\", function () { pm.response.to.have.status(200); });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/mantenimientos/{{manttoId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "mantenimientos",
-                "{{manttoId}}"
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "08 Obtener mantenimiento inexistente (404)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 404\", function () { pm.response.to.have.status(404); });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/mantenimientos/999999",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "mantenimientos",
-                "999999"
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "09 Actualizar mantenimiento (200)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 200\", function () { pm.response.to.have.status(200); });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/mantenimientos/{{manttoId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "mantenimientos",
-                "{{manttoId}}"
-              ]
-            },
-            "description": "",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"vehiculoId\": {{manttoVehiculoId}},\n  \"fechaInicio\": \"{{fechaInicio}}\",\n  \"fechaFin\": \"{{fechaFin}}\",\n  \"descripcion\": \"Cambio de llantas\",\n  \"costo\": 120.00\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "10 Eliminar mantenimiento (204)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo esperado 200/204\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 204]); });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/mantenimientos/{{manttoId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "mantenimientos",
-                "{{manttoId}}"
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "11 Obtener mantenimiento eliminado (404)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 404\", function () { pm.response.to.have.status(404); });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/mantenimientos/{{manttoId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "mantenimientos",
-                "{{manttoId}}"
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "4. Reservas",
-      "description": "Autocontenida: crea su propio cliente y vehiculo (40.00 por dia). Fechas: inicio +5 dias, fin +8 dias = 3 dias = 120.00. Los pasos 17 a 19 dependen de las validaciones agregadas en ClienteServiceImpl y VehiculoServiceImpl.",
-      "item": [
-        {
-          "name": "01 Preparar: crear cliente (201)",
-          "event": [
-            {
-              "listen": "prerequest",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "const rnd = Math.floor(10000 + Math.random() * 90000);",
-                  "pm.collectionVariables.set('docResCliente', '5' + rnd + '-3');",
-                  "pm.collectionVariables.set('correoResCliente', 'reserva' + rnd + '@example.com');"
-                ]
-              }
-            },
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 201\", function () { pm.response.to.have.status(201); });",
-                  "if (pm.response.code < 300) { pm.collectionVariables.set(\"resClienteId\", pm.response.json().id); }"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/clientes",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "clientes"
-              ]
-            },
-            "description": "",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Carlos\",\n  \"apellido\": \"Martinez\",\n  \"documentoIdentidad\": \"{{docResCliente}}\",\n  \"correo\": \"{{correoResCliente}}\",\n  \"telefono\": \"7788-1234\",\n  \"licenciaConducir\": \"L-123456\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "02 Preparar: crear vehículo (201)",
-          "event": [
-            {
-              "listen": "prerequest",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "const rnd = Math.floor(10000 + Math.random() * 90000);",
-                  "pm.collectionVariables.set('placaRes', 'R' + rnd);"
-                ]
-              }
-            },
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 201\", function () { pm.response.to.have.status(201); });",
-                  "if (pm.response.code < 300) { pm.collectionVariables.set(\"resVehiculoId\", pm.response.json().id); }"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/vehiculos",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "vehiculos"
-              ]
-            },
-            "description": "",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"marca\": \"Toyota\",\n  \"modelo\": \"Hilux\",\n  \"placa\": \"{{placaRes}}\",\n  \"categoria\": \"Pickup\",\n  \"precioPorDia\": 40.00\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "03 Crear reserva (201)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 201\", function () { pm.response.to.have.status(201); });",
-                  "if (pm.response.code < 300) { pm.collectionVariables.set(\"reservaId\", pm.response.json().id); }",
-                  "pm.test(\"Estado ACTIVA\", function () { const b = pm.response.json(); pm.expect(b.estado === 'ACTIVA').to.be.true; });",
-                  "pm.test(\"Costo = 3 dias x 40 = 120\", function () { const b = pm.response.json(); pm.expect(b.costoTotal === 120).to.be.true; });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/reservas",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "reservas"
-              ]
-            },
-            "description": "Valida cliente, vehiculo DISPONIBLE y sin traslape. Guarda el id en {{reservaId}}.",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"clienteId\": {{resClienteId}},\n  \"vehiculoId\": {{resVehiculoId}},\n  \"fechaInicio\": \"{{fechaInicio}}\",\n  \"fechaFin\": \"{{fechaFin}}\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "04 Vehículo pasa a ALQUILADO (200)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 200\", function () { pm.response.to.have.status(200); });",
-                  "pm.test(\"Estado ALQUILADO\", function () { const b = pm.response.json(); pm.expect(b.estado === 'ALQUILADO').to.be.true; });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/vehiculos/{{resVehiculoId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "vehiculos",
-                "{{resVehiculoId}}"
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "05 Reservar el mismo vehículo (409)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 409\", function () { pm.response.to.have.status(409); });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/reservas",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "reservas"
-              ]
-            },
-            "description": "El vehiculo ya no esta DISPONIBLE.",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"clienteId\": {{resClienteId}},\n  \"vehiculoId\": {{resVehiculoId}},\n  \"fechaInicio\": \"{{fechaInicio}}\",\n  \"fechaFin\": \"{{fechaFin}}\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "06 Disponibilidad tras reservar (200, false)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 200\", function () { pm.response.to.have.status(200); });",
-                  "pm.test(\"disponible = false\", function () { const b = pm.response.json(); pm.expect(b.disponible === false).to.be.true; });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/vehiculos/{{resVehiculoId}}/disponibilidad?fechaInicio={{fechaInicio}}&fechaFin={{fechaFin}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "vehiculos",
-                "{{resVehiculoId}}",
-                "disponibilidad"
-              ],
-              "query": [
-                {
-                  "key": "fechaInicio",
-                  "value": "{{fechaInicio}}"
-                },
-                {
-                  "key": "fechaFin",
-                  "value": "{{fechaFin}}"
-                }
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "07 Reserva con cliente inexistente (404)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 404\", function () { pm.response.to.have.status(404); });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/reservas",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "reservas"
-              ]
-            },
-            "description": "",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"clienteId\": 999999,\n  \"vehiculoId\": {{resVehiculoId}},\n  \"fechaInicio\": \"{{fechaInicio}}\",\n  \"fechaFin\": \"{{fechaFin}}\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "08 Reserva con vehículo inexistente (404)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 404\", function () { pm.response.to.have.status(404); });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/reservas",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "reservas"
-              ]
-            },
-            "description": "",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"clienteId\": {{resClienteId}},\n  \"vehiculoId\": 999999,\n  \"fechaInicio\": \"{{fechaInicio}}\",\n  \"fechaFin\": \"{{fechaFin}}\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "09 Reserva con fecha de inicio pasada (400)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 400\", function () { pm.response.to.have.status(400); });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/reservas",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "reservas"
-              ]
-            },
-            "description": "Rechazada por @FutureOrPresent en el DTO.",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"clienteId\": {{resClienteId}},\n  \"vehiculoId\": {{resVehiculoId}},\n  \"fechaInicio\": \"{{fechaPasada}}\",\n  \"fechaFin\": \"{{fechaFin}}\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "10 Reserva con fechas invertidas (400)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 400\", function () { pm.response.to.have.status(400); });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/reservas",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "reservas"
-              ]
-            },
-            "description": "Rechazada por la regla fechaInicio < fechaFin del servicio.",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"clienteId\": {{resClienteId}},\n  \"vehiculoId\": {{resVehiculoId}},\n  \"fechaInicio\": \"{{fechaFin}}\",\n  \"fechaFin\": \"{{fechaInicio}}\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "11 Listar reservas (200)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 200\", function () { pm.response.to.have.status(200); });",
-                  "pm.test(\"Devuelve una lista\", function () { const b = pm.response.json(); pm.expect(Array.isArray(b) && b.length > 0).to.be.true; });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/reservas",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "reservas"
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "12 Obtener reserva por ID (200)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 200\", function () { pm.response.to.have.status(200); });",
-                  "pm.test(\"El id coincide\", function () { const b = pm.response.json(); pm.expect(String(b.id) === String(pm.collectionVariables.get('reservaId'))).to.be.true; });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/reservas/{{reservaId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "reservas",
-                "{{reservaId}}"
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "13 Listar reservas de un cliente (200)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 200\", function () { pm.response.to.have.status(200); });",
-                  "pm.test(\"Tiene al menos una\", function () { const b = pm.response.json(); pm.expect(Array.isArray(b) && b.length >= 1).to.be.true; });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/reservas/cliente/{{resClienteId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "reservas",
-                "cliente",
-                "{{resClienteId}}"
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "14 Obtener reserva inexistente (404)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 404\", function () { pm.response.to.have.status(404); });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/reservas/999999",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "reservas",
-                "999999"
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "15 Actualizar reserva: extender fechas (200)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 200\", function () { pm.response.to.have.status(200); });",
-                  "pm.test(\"Costo = 5 dias x 40 = 200\", function () { const b = pm.response.json(); pm.expect(b.costoTotal === 200).to.be.true; });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/reservas/{{reservaId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "reservas",
-                "{{reservaId}}"
-              ]
-            },
-            "description": "",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"fechaInicio\": \"{{fechaInicio}}\",\n  \"fechaFin\": \"{{fechaFinExtendida}}\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "16 Actualizar reserva con fechas invertidas (400)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 400\", function () { pm.response.to.have.status(400); });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/reservas/{{reservaId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "reservas",
-                "{{reservaId}}"
-              ]
-            },
-            "description": "",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"fechaInicio\": \"{{fechaFin}}\",\n  \"fechaFin\": \"{{fechaInicio}}\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "17 Eliminar reserva ACTIVA (409)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 409\", function () { pm.response.to.have.status(409); });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/reservas/{{reservaId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "reservas",
-                "{{reservaId}}"
-              ]
-            },
-            "description": "Hay que cancelarla o finalizarla primero."
-          },
-          "response": []
-        },
-        {
-          "name": "18 Eliminar vehículo con reserva (409)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 409\", function () { pm.response.to.have.status(409); });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/vehiculos/{{resVehiculoId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "vehiculos",
-                "{{resVehiculoId}}"
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "19 Eliminar cliente con reservas (409)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 409\", function () { pm.response.to.have.status(409); });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/clientes/{{resClienteId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "clientes",
-                "{{resClienteId}}"
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "20 Poner DISPONIBLE con reserva activa (409)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 409\", function () { pm.response.to.have.status(409); });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "PATCH",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/vehiculos/{{resVehiculoId}}/estado?nuevoEstado=DISPONIBLE",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "vehiculos",
-                "{{resVehiculoId}}",
-                "estado"
-              ],
-              "query": [
-                {
-                  "key": "nuevoEstado",
-                  "value": "DISPONIBLE"
-                }
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "21 Cancelar reserva (200)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 200\", function () { pm.response.to.have.status(200); });",
-                  "pm.test(\"Estado CANCELADA\", function () { const b = pm.response.json(); pm.expect(b.estado === 'CANCELADA').to.be.true; });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "PATCH",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/reservas/{{reservaId}}/cancelar",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "reservas",
-                "{{reservaId}}",
-                "cancelar"
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "22 Cancelar reserva ya cancelada (409)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 409\", function () { pm.response.to.have.status(409); });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "PATCH",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/reservas/{{reservaId}}/cancelar",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "reservas",
-                "{{reservaId}}",
-                "cancelar"
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "23 Vehículo vuelve a DISPONIBLE (200)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 200\", function () { pm.response.to.have.status(200); });",
-                  "pm.test(\"Estado DISPONIBLE\", function () { const b = pm.response.json(); pm.expect(b.estado === 'DISPONIBLE').to.be.true; });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/vehiculos/{{resVehiculoId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "vehiculos",
-                "{{resVehiculoId}}"
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "24 Nueva reserva en las mismas fechas (201)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 201\", function () { pm.response.to.have.status(201); });",
-                  "if (pm.response.code < 300) { pm.collectionVariables.set(\"reservaId2\", pm.response.json().id); }"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/reservas",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "reservas"
-              ]
-            },
-            "description": "Cancelar libera las fechas: la nueva reserva se acepta.",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"clienteId\": {{resClienteId}},\n  \"vehiculoId\": {{resVehiculoId}},\n  \"fechaInicio\": \"{{fechaInicio}}\",\n  \"fechaFin\": \"{{fechaFin}}\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "25 Finalizar reserva (200)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 200\", function () { pm.response.to.have.status(200); });",
-                  "pm.test(\"Estado FINALIZADA\", function () { const b = pm.response.json(); pm.expect(b.estado === 'FINALIZADA').to.be.true; });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "PATCH",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/reservas/{{reservaId2}}/finalizar",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "reservas",
-                "{{reservaId2}}",
-                "finalizar"
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "26 Eliminar reserva cancelada (204)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 204\", function () { pm.response.to.have.status(204); });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/reservas/{{reservaId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "reservas",
-                "{{reservaId}}"
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "27 Eliminar reserva finalizada (204)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 204\", function () { pm.response.to.have.status(204); });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/reservas/{{reservaId2}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "reservas",
-                "{{reservaId2}}"
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        },
-        {
-          "name": "28 Limpieza: eliminar vehículo (204)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 204\", function () { pm.response.to.have.status(204); });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/vehiculos/{{resVehiculoId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "vehiculos",
-                "{{resVehiculoId}}"
-              ]
-            },
-            "description": "Ya sin reservas, el vehiculo se puede eliminar."
-          },
-          "response": []
-        },
-        {
-          "name": "29 Limpieza: eliminar cliente (204)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 204\", function () { pm.response.to.have.status(204); });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/clientes/{{resClienteId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "clientes",
-                "{{resClienteId}}"
-              ]
-            },
-            "description": ""
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "Originales (del equipo)",
-      "description": "Requests que ya existian en la coleccion, sin cambios. Usan IDs fijos, por eso pueden devolver 404 segun el estado de la BD.",
-      "item": [
-        {
-          "name": "Base",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "http://localhost:8080/",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8080",
-              "path": [
-                ""
-              ]
-            },
-            "description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
-          },
-          "response": [
-            {
-              "name": "Base",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "http://localhost:8080/",
-                  "protocol": "http",
-                  "host": [
-                    "localhost"
-                  ],
-                  "port": "8080",
-                  "path": [
-                    ""
-                  ]
-                }
-              },
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "content-type",
-                  "value": "text/plain;charset=UTF-8"
-                },
-                {
-                  "key": "content-length",
-                  "value": "72"
-                },
-                {
-                  "key": "date",
-                  "value": "Thu, 22 Oct 2026 04:38:18 GMT"
-                },
-                {
-                  "key": "keep-alive",
-                  "value": "timeout=60"
-                },
-                {
-                  "key": "connection",
-                  "value": "keep-alive"
-                }
-              ],
-              "cookie": [],
-              "body": "Test 1: Sistema de alquiler de vehículos funcionando con Spring Boot :)"
-            }
-          ]
-        },
-        {
-          "name": "Crear Vehiculo",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Successful POST request\", function () {\n    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\n});\n"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"marca\": \"Volvo\",\n  \"modelo\": \"XC60\",\n  \"placa\": \"P10901\",\n  \"categoria\": \"SUV\",\n  \"precioPorDia\": 70.00\n}",
@@ -2875,185 +198,58 @@
                 "api",
                 "vehiculos"
               ]
-            },
-            "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
-          },
-          "response": [
-            {
-              "name": "Crear Vehiculo",
-              "originalRequest": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"marca\": \"Mazda\",\n  \"modelo\": \"CX-5\",\n  \"placa\": \"P10901\",\n  \"categoria\": \"SUV\",\n  \"precioPorDia\": 50.00\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "http://localhost:8080/api/vehiculos",
-                  "protocol": "http",
-                  "host": [
-                    "localhost"
-                  ],
-                  "port": "8080",
-                  "path": [
-                    "api",
-                    "vehiculos"
-                  ]
-                }
-              },
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "content-type",
-                  "value": "application/json"
-                },
-                {
-                  "key": "transfer-encoding",
-                  "value": "chunked"
-                },
-                {
-                  "key": "date",
-                  "value": "Thu, 22 Oct 2026 04:40:16 GMT"
-                },
-                {
-                  "key": "keep-alive",
-                  "value": "timeout=60"
-                },
-                {
-                  "key": "connection",
-                  "value": "keep-alive"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n  \"id\": 7,\n  \"marca\": \"Mazda\",\n  \"modelo\": \"CX-5\",\n  \"placa\": \"P10901\",\n  \"categoria\": \"SUV\",\n  \"precioPorDia\": 50,\n  \"estado\": \"DISPONIBLE\"\n}"
-            },
-            {
-              "name": "Crear Vehiculo",
-              "originalRequest": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"marca\": \"Volvo\",\n  \"modelo\": \"XC60\",\n  \"placa\": \"P10901\",\n  \"categoria\": \"SUV\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "http://localhost:8080/api/vehiculos",
-                  "protocol": "http",
-                  "host": [
-                    "localhost"
-                  ],
-                  "port": "8080",
-                  "path": [
-                    "api",
-                    "vehiculos"
-                  ]
-                }
-              },
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "content-type",
-                  "value": "application/json"
-                },
-                {
-                  "key": "transfer-encoding",
-                  "value": "chunked"
-                },
-                {
-                  "key": "date",
-                  "value": "Thu, 22 Oct 2026 04:44:09 GMT"
-                },
-                {
-                  "key": "connection",
-                  "value": "close"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n  \"timestamp\": \"2026-10-21 22:44:09\",\n  \"status\": 400,\n  \"error\": \"Bad Request\",\n  \"message\": \"El precio por día es obligatorio.\",\n  \"path\": \"/api/vehiculos\"\n}"
-            },
-            {
-              "name": "Crear Vehiculo",
-              "originalRequest": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"marca\": \"Volvo\",\n  \"modelo\": \"XC60\",\n  \"placa\": \"P10901\",\n  \"categoria\": \"SUV\",\n  \"precioPorDia\": 70.00\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "http://localhost:8080/api/vehiculos",
-                  "protocol": "http",
-                  "host": [
-                    "localhost"
-                  ],
-                  "port": "8080",
-                  "path": [
-                    "api",
-                    "vehiculos"
-                  ]
-                }
-              },
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "content-type",
-                  "value": "application/json"
-                },
-                {
-                  "key": "transfer-encoding",
-                  "value": "chunked"
-                },
-                {
-                  "key": "date",
-                  "value": "Thu, 22 Oct 2026 04:44:38 GMT"
-                },
-                {
-                  "key": "keep-alive",
-                  "value": "timeout=60"
-                },
-                {
-                  "key": "connection",
-                  "value": "keep-alive"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n  \"timestamp\": \"2026-10-21 22:44:38\",\n  \"status\": 409,\n  \"error\": \"Conflict\",\n  \"message\": \"Ya existe un vehiculo registrado con la placa: P10901\",\n  \"path\": \"/api/vehiculos\"\n}"
             }
+          },
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "transfer-encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "date",
+              "value": "Thu, 22 Oct 2026 04:44:38 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"timestamp\": \"2026-10-21 22:44:38\",\n  \"status\": 409,\n  \"error\": \"Conflict\",\n  \"message\": \"Ya existe un vehiculo registrado con la placa: P10901\",\n  \"path\": \"/api/vehiculos\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Obtener Vehiculos",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/vehiculos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "vehiculos"
           ]
-        },
+        }
+      },
+      "response": [
         {
           "name": "Obtener Vehiculos",
-          "request": {
+          "originalRequest": {
             "method": "GET",
             "header": [],
             "url": {
@@ -3070,85 +266,84 @@
               ]
             }
           },
-          "response": [
+          "_postman_previewlanguage": "json",
+          "header": [
             {
-              "name": "Obtener Vehiculos",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "http://localhost:8080/api/vehiculos/20",
-                  "protocol": "http",
-                  "host": [
-                    "localhost"
-                  ],
-                  "port": "8080",
-                  "path": [
-                    "api",
-                    "vehiculos",
-                    "20"
-                  ]
-                }
-              },
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "content-type",
-                  "value": "application/json"
-                },
-                {
-                  "key": "transfer-encoding",
-                  "value": "chunked"
-                },
-                {
-                  "key": "date",
-                  "value": "Thu, 22 Oct 2026 04:45:18 GMT"
-                },
-                {
-                  "key": "keep-alive",
-                  "value": "timeout=60"
-                },
-                {
-                  "key": "connection",
-                  "value": "keep-alive"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n  \"timestamp\": \"2026-10-21 22:45:18\",\n  \"status\": 404,\n  \"error\": \"Not Found\",\n  \"message\": \"Vehiculo con ID 20 no encontrado.\",\n  \"path\": \"/api/vehiculos/20\"\n}"
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "transfer-encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "date",
+              "value": "Thu, 22 Oct 2026 04:45:18 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"timestamp\": \"2026-10-21 22:45:18\",\n  \"status\": 404,\n  \"error\": \"Not Found\",\n  \"message\": \"Vehiculo con ID 20 no encontrado.\",\n  \"path\": \"/api/vehiculos/20\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Cambio Estado de Vehiculo",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/vehiculos/6/estado?nuevoEstado=EN_MANTENIMIENTO",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "vehiculos",
+            "6",
+            "estado"
+          ],
+          "query": [
+            {
+              "key": "nuevoEstado",
+              "value": "EN_MANTENIMIENTO"
             }
           ]
-        },
-        {
-          "name": "Cambio Estado de Vehiculo",
-          "request": {
-            "method": "PATCH",
-            "header": [],
-            "url": {
-              "raw": "http://localhost:8080/api/vehiculos/6/estado?nuevoEstado=EN_MANTENIMIENTO",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8080",
-              "path": [
-                "api",
-                "vehiculos",
-                "6",
-                "estado"
-              ],
-              "query": [
-                {
-                  "key": "nuevoEstado",
-                  "value": "EN_MANTENIMIENTO"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Mantenimientos",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/mantenimientos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "mantenimientos"
+          ]
+        }
+      },
+      "response": [
         {
           "name": "Get Mantenimientos",
-          "request": {
+          "originalRequest": {
             "method": "GET",
             "header": [],
             "url": {
@@ -3164,56 +359,70 @@
               ]
             }
           },
-          "response": [
+          "_postman_previewlanguage": "json",
+          "header": [
             {
-              "name": "Get Mantenimientos",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "http://localhost:8080/api/mantenimientos",
-                  "protocol": "http",
-                  "host": [
-                    "localhost"
-                  ],
-                  "port": "8080",
-                  "path": [
-                    "api",
-                    "mantenimientos"
-                  ]
-                }
-              },
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "content-type",
-                  "value": "application/json"
-                },
-                {
-                  "key": "transfer-encoding",
-                  "value": "chunked"
-                },
-                {
-                  "key": "date",
-                  "value": "Thu, 22 Oct 2026 04:45:44 GMT"
-                },
-                {
-                  "key": "keep-alive",
-                  "value": "timeout=60"
-                },
-                {
-                  "key": "connection",
-                  "value": "keep-alive"
-                }
-              ],
-              "cookie": [],
-              "body": "[\n  {\n    \"id\": 1,\n    \"vehiculoId\": 3,\n    \"placaVehiculo\": \"P456789\",\n    \"fechaInicio\": \"2026-10-20\",\n    \"fechaFin\": \"2026-10-24\",\n    \"descripcion\": \"Revisión periódica y cambio de aceite\",\n    \"costo\": 85\n  },\n  {\n    \"id\": 2,\n    \"vehiculoId\": 5,\n    \"placaVehiculo\": \"P654321\",\n    \"fechaInicio\": \"2026-11-05\",\n    \"fechaFin\": \"2026-11-06\",\n    \"descripcion\": \"Cambio de pastillas de freno y rectificación de discos\",\n    \"costo\": 150\n  },\n  {\n    \"id\": 3,\n    \"vehiculoId\": 1,\n    \"placaVehiculo\": \"P123456\",\n    \"fechaInicio\": \"2026-10-22\",\n    \"fechaFin\": \"2026-10-25\",\n    \"descripcion\": \"Cambio de pastillas de freno y aceite\",\n    \"costo\": 75.5\n  },\n  {\n    \"id\": 4,\n    \"vehiculoId\": 2,\n    \"placaVehiculo\": \"P987654\",\n    \"fechaInicio\": \"2026-10-22\",\n    \"fechaFin\": \"2026-10-25\",\n    \"descripcion\": \"Cambio de pastillas de freno y aceite\",\n    \"costo\": 75.5\n  }\n]"
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "transfer-encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "date",
+              "value": "Thu, 22 Oct 2026 04:45:44 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
             }
-          ]
+          ],
+          "cookie": [],
+          "body": "[\n  {\n    \"id\": 1,\n    \"vehiculoId\": 3,\n    \"placaVehiculo\": \"P456789\",\n    \"fechaInicio\": \"2026-10-20\",\n    \"fechaFin\": \"2026-10-24\",\n    \"descripcion\": \"Revisión periódica y cambio de aceite\",\n    \"costo\": 85\n  },\n  {\n    \"id\": 2,\n    \"vehiculoId\": 5,\n    \"placaVehiculo\": \"P654321\",\n    \"fechaInicio\": \"2026-11-05\",\n    \"fechaFin\": \"2026-11-06\",\n    \"descripcion\": \"Cambio de pastillas de freno y rectificación de discos\",\n    \"costo\": 150\n  },\n  {\n    \"id\": 3,\n    \"vehiculoId\": 1,\n    \"placaVehiculo\": \"P123456\",\n    \"fechaInicio\": \"2026-10-22\",\n    \"fechaFin\": \"2026-10-25\",\n    \"descripcion\": \"Cambio de pastillas de freno y aceite\",\n    \"costo\": 75.5\n  },\n  {\n    \"id\": 4,\n    \"vehiculoId\": 2,\n    \"placaVehiculo\": \"P987654\",\n    \"fechaInicio\": \"2026-10-22\",\n    \"fechaFin\": \"2026-10-25\",\n    \"descripcion\": \"Cambio de pastillas de freno y aceite\",\n    \"costo\": 75.5\n  }\n]"
+        }
+      ]
+    },
+    {
+      "name": "Crear Mantto",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"vehiculoId\": 2,\r\n  \"fechaInicio\": \"2026-10-22\",\r\n  \"fechaFin\": \"2026-10-25\",\r\n  \"descripcion\": \"Cambio de pastillas de freno y aceite\",\r\n  \"costo\": 75.50\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
         },
+        "url": {
+          "raw": "http://localhost:8080/api/mantenimientos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "mantenimientos"
+          ]
+        }
+      },
+      "response": [
         {
           "name": "Crear Mantto",
-          "request": {
+          "originalRequest": {
             "method": "POST",
             "header": [
               {
@@ -3243,92 +452,594 @@
               ]
             }
           },
-          "response": [
+          "_postman_previewlanguage": "json",
+          "header": [
             {
-              "name": "Crear Mantto",
-              "originalRequest": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\r\n  \"vehiculoId\": 2,\r\n  \"fechaInicio\": \"2026-10-22\",\r\n  \"fechaFin\": \"2026-10-25\",\r\n  \"descripcion\": \"Cambio de pastillas de freno y aceite\",\r\n  \"costo\": 75.50\r\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "http://localhost:8080/api/mantenimientos",
-                  "protocol": "http",
-                  "host": [
-                    "localhost"
-                  ],
-                  "port": "8080",
-                  "path": [
-                    "api",
-                    "mantenimientos"
-                  ]
-                }
-              },
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "content-type",
-                  "value": "application/json"
-                },
-                {
-                  "key": "transfer-encoding",
-                  "value": "chunked"
-                },
-                {
-                  "key": "date",
-                  "value": "Thu, 22 Oct 2026 04:41:53 GMT"
-                },
-                {
-                  "key": "keep-alive",
-                  "value": "timeout=60"
-                },
-                {
-                  "key": "connection",
-                  "value": "keep-alive"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n  \"id\": 4,\n  \"vehiculoId\": 2,\n  \"placaVehiculo\": \"P987654\",\n  \"fechaInicio\": \"2026-10-22\",\n  \"fechaFin\": \"2026-10-25\",\n  \"descripcion\": \"Cambio de pastillas de freno y aceite\",\n  \"costo\": 75.5\n}"
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "transfer-encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "date",
+              "value": "Thu, 22 Oct 2026 04:41:53 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
             }
-          ]
+          ],
+          "cookie": [],
+          "body": "{\n  \"id\": 4,\n  \"vehiculoId\": 2,\n  \"placaVehiculo\": \"P987654\",\n  \"fechaInicio\": \"2026-10-22\",\n  \"fechaFin\": \"2026-10-25\",\n  \"descripcion\": \"Cambio de pastillas de freno y aceite\",\n  \"costo\": 75.5\n}"
         }
       ]
-    }
-  ],
-  "event": [
+    },
     {
-      "listen": "prerequest",
-      "script": {
-        "type": "text/javascript",
-        "exec": [
-          "// Fechas dinamicas para que las pruebas no caduquen",
-          "const fmt = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');",
-          "const addDays = n => { const d = new Date(); d.setDate(d.getDate() + n); return fmt(d); };",
-          "pm.collectionVariables.set('fechaInicio', addDays(5));",
-          "pm.collectionVariables.set('fechaFin', addDays(8));",
-          "pm.collectionVariables.set('fechaFinExtendida', addDays(10));",
-          "pm.collectionVariables.set('fechaPasada', addDays(-3));"
-        ]
-      }
-    }
-  ],
-  "variable": [
+      "name": "Actualizar Vehiculo",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"marca\": \"Toyota\",\r\n  \"modelo\": \"Corolla 2026\",\r\n  \"placa\": \"P123456\",\r\n  \"categoria\": \"Sedan\",\r\n  \"precioPorDia\": 42.00\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/vehiculos/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "vehiculos",
+            "1"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Actualizar Vehiculo",
+          "originalRequest": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"marca\": \"Toyota\",\r\n  \"modelo\": \"Corolla 2026\",\r\n  \"placa\": \"P123456\",\r\n  \"categoria\": \"Sedan\",\r\n  \"precioPorDia\": 42.00\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/vehiculos/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "vehiculos",
+                "1"
+              ]
+            }
+          },
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "transfer-encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "date",
+              "value": "Mon, 26 Oct 2026 23:35:42 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"id\": 1,\n  \"marca\": \"Toyota\",\n  \"modelo\": \"Corolla 2026\",\n  \"placa\": \"P123456\",\n  \"categoria\": \"Sedan\",\n  \"precioPorDia\": 42,\n  \"estado\": \"DISPONIBLE\"\n}"
+        }
+      ]
+    },
     {
-      "key": "baseUrl",
-      "value": "http://localhost:8080",
-      "type": "string"
+      "name": "Eliminar Vehiculo",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"marca\": \"Volvo\",\n  \"modelo\": \"XC60\",\n  \"placa\": \"P10901\",\n  \"categoria\": \"SUV\",\n  \"precioPorDia\": 70.00\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/vehiculos/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "vehiculos",
+            "1"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Eliminar Vehiculo",
+          "originalRequest": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"marca\": \"Volvo\",\n  \"modelo\": \"XC60\",\n  \"placa\": \"P10901\",\n  \"categoria\": \"SUV\",\n  \"precioPorDia\": 70.00\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/vehiculos/3",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "vehiculos",
+                "3"
+              ]
+            }
+          },
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "transfer-encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "date",
+              "value": "Mon, 26 Oct 2026 23:48:23 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"timestamp\": \"2026-10-26 17:48:23\",\n  \"status\": 409,\n  \"error\": \"Conflict\",\n  \"message\": \"No se puede eliminar el registro porque tiene otros datos asociados (mantenimientos o reservas).\",\n  \"path\": \"/api/vehiculos/3\"\n}"
+        },
+        {
+          "name": "Eliminar Vehiculo",
+          "originalRequest": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"marca\": \"Volvo\",\n  \"modelo\": \"XC60\",\n  \"placa\": \"P10901\",\n  \"categoria\": \"SUV\",\n  \"precioPorDia\": 70.00\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/vehiculos/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "vehiculos",
+                "1"
+              ]
+            }
+          },
+          "_postman_previewlanguage": "text",
+          "header": [
+            {
+              "key": "date",
+              "value": "Mon, 26 Oct 2026 23:48:54 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": ""
+        }
+      ]
+    },
+    {
+      "name": "Actualizar Mantto",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"vehiculoId\": 3,\r\n  \"fechaInicio\": \"2026-10-20\",\r\n  \"fechaFin\": \"2026-10-26\",\r\n  \"descripcion\": \"Revisión periódica, cambio de aceite y filtro de aire\",\r\n  \"costo\": 95.00\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/mantenimientos/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "mantenimientos",
+            "1"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Actualizar Mantto",
+          "originalRequest": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"vehiculoId\": 3,\r\n  \"fechaInicio\": \"2026-10-20\",\r\n  \"fechaFin\": \"2026-10-26\",\r\n  \"descripcion\": \"Revisión periódica, cambio de aceite y filtro de aire\",\r\n  \"costo\": 95.00\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/mantenimientos/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "mantenimientos",
+                "1"
+              ]
+            }
+          },
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "transfer-encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "date",
+              "value": "Mon, 26 Oct 2026 23:54:02 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"id\": 1,\n  \"vehiculoId\": 3,\n  \"placaVehiculo\": \"P456789\",\n  \"fechaInicio\": \"2026-10-20\",\n  \"fechaFin\": \"2026-10-26\",\n  \"descripcion\": \"Revisión periódica, cambio de aceite y filtro de aire\",\n  \"costo\": 95\n}"
+        }
+      ]
+    },
+    {
+      "name": "Eliminar Mantto",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"vehiculoId\": 2,\r\n  \"fechaInicio\": \"2026-10-22\",\r\n  \"fechaFin\": \"2026-10-25\",\r\n  \"descripcion\": \"Cambio de pastillas de freno y aceite\",\r\n  \"costo\": 75.50\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/mantenimientos/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "mantenimientos",
+            "1"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Eliminar Mantto",
+          "originalRequest": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"vehiculoId\": 2,\r\n  \"fechaInicio\": \"2026-10-22\",\r\n  \"fechaFin\": \"2026-10-25\",\r\n  \"descripcion\": \"Cambio de pastillas de freno y aceite\",\r\n  \"costo\": 75.50\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/mantenimientos/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "mantenimientos",
+                "1"
+              ]
+            }
+          },
+          "_postman_previewlanguage": "text",
+          "header": [
+            {
+              "key": "date",
+              "value": "Mon, 26 Oct 2026 23:55:29 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": ""
+        }
+      ]
+    },
+    {
+      "name": "Get Clientes",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/clientes",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "clientes"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Get Clientes",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/clientes",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "clientes"
+              ]
+            }
+          },
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "transfer-encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "date",
+              "value": "Mon, 26 Oct 2026 23:56:57 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "[\n  {\n    \"id\": 1,\n    \"nombre\": \"Carlos\",\n    \"apellido\": \"Martínez\",\n    \"documentoIdentidad\": \"04567890-1\",\n    \"correo\": \"carlos.martinez@example.com\",\n    \"telefono\": \"7788-1234\",\n    \"licenciaConducir\": \"L-123456\"\n  },\n  {\n    \"id\": 2,\n    \"nombre\": \"María\",\n    \"apellido\": \"López\",\n    \"documentoIdentidad\": \"03214567-8\",\n    \"correo\": \"maria.lopez@example.com\",\n    \"telefono\": \"7012-3456\",\n    \"licenciaConducir\": \"L-654321\"\n  },\n  {\n    \"id\": 3,\n    \"nombre\": \"Jorge\",\n    \"apellido\": \"Hernández\",\n    \"documentoIdentidad\": \"05123489-2\",\n    \"correo\": \"jorge.hernandez@example.com\",\n    \"telefono\": \"6234-5678\",\n    \"licenciaConducir\": \"L-987654\"\n  }\n]"
+        }
+      ]
+    },
+    {
+      "name": "Crear Cliente",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"nombre\": \"Abigail\",\r\n  \"apellido\": \"Rivas\",\r\n  \"documentoIdentidad\": \"06120056-7\",\r\n  \"correo\": \"abigail.rivas@gmail.com\",\r\n  \"telefono\": \"7890-1234\",\r\n  \"licenciaConducir\": \"L-554433\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/clientes",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "clientes"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Crear Cliente",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nombre\": \"Abigail\",\r\n  \"apellido\": \"Rivas\",\r\n  \"documentoIdentidad\": \"06120056-7\",\r\n  \"correo\": \"abigail.rivas@gmail.com\",\r\n  \"telefono\": \"7890-1234\",\r\n  \"licenciaConducir\": \"L-554433\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/clientes",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "clientes"
+              ]
+            }
+          },
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "transfer-encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "date",
+              "value": "Mon, 26 Oct 2026 23:59:26 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"id\": 4,\n  \"nombre\": \"Abigail\",\n  \"apellido\": \"Rivas\",\n  \"documentoIdentidad\": \"06120056-7\",\n  \"correo\": \"abigail.rivas@gmail.com\",\n  \"telefono\": \"7890-1234\",\n  \"licenciaConducir\": \"L-554433\"\n}"
+        }
+      ]
     }
   ]
 }
