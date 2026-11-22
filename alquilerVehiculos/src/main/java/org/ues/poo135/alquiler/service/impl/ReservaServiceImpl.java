@@ -1,13 +1,12 @@
 package org.ues.poo135.alquiler.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 import org.ues.poo135.alquiler.dto.ActualizarReservaDTO;
 import org.ues.poo135.alquiler.dto.CrearReservaDTO;
 import org.ues.poo135.alquiler.dto.ReservaResponseDTO;
+import org.ues.poo135.alquiler.exception.ResourceNotFoundException;
 import org.ues.poo135.alquiler.model.Cliente;
 import org.ues.poo135.alquiler.model.Reserva;
 import org.ues.poo135.alquiler.model.Reserva.EstadoReserva;
@@ -16,9 +15,11 @@ import org.ues.poo135.alquiler.model.Vehiculo.EstadoVehiculo;
 import org.ues.poo135.alquiler.repository.ClienteRepository;
 import org.ues.poo135.alquiler.repository.ReservaRepository;
 import org.ues.poo135.alquiler.repository.VehiculoRepository;
+import org.ues.poo135.alquiler.rules.ReglasEstadoReserva;
+import org.ues.poo135.alquiler.rules.ReglasEstadoVehiculo;
+import org.ues.poo135.alquiler.service.DisponibilidadService;
 import org.ues.poo135.alquiler.service.ReservaService;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -26,41 +27,24 @@ import java.util.List;
 @Transactional
 public class ReservaServiceImpl implements ReservaService {
 
-    // Id que nunca existe: se usa al crear, cuando no hay reserva propia que excluir
-    private static final Long SIN_EXCLUSION = -1L;
-
     private final ReservaRepository reservaRepository;
     private final ClienteRepository clienteRepository;
     private final VehiculoRepository vehiculoRepository;
+    private final DisponibilidadService disponibilidadService;
 
     @Override
     public ReservaResponseDTO crearReserva(CrearReservaDTO dto) {
         Cliente cliente = clienteRepository.findById(dto.getClienteId())
-            .orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND, "Cliente con ID " + dto.getClienteId() + " no encontrado."));
+            .orElseThrow(() -> new ResourceNotFoundException(
+                "Cliente con ID " + dto.getClienteId() + " no encontrado."));
 
         Vehiculo vehiculo = vehiculoRepository.findById(dto.getVehiculoId())
-            .orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND, "Vehiculo con ID " + dto.getVehiculoId() + " no encontrado."));
+            .orElseThrow(() -> new ResourceNotFoundException(
+                "Vehiculo con ID " + dto.getVehiculoId() + " no encontrado."));
 
-        validarRangoFechas(dto.getFechaInicio(), dto.getFechaFin());
-
-        // Regla 1: el vehiculo debe estar en estado DISPONIBLE
-        if (vehiculo.getEstado() != EstadoVehiculo.DISPONIBLE) {
-            throw new ResponseStatusException(
-                HttpStatus.CONFLICT,
-                "El vehiculo no esta disponible. Estado actual: " + vehiculo.getEstado() + "."
-            );
-        }
-
-        // Regla 2: sin traslape de fechas con otras reservas activas
-        if (reservaRepository.existeReservaActivaEnRango(
-                vehiculo.getId(), dto.getFechaInicio(), dto.getFechaFin(), SIN_EXCLUSION)) {
-            throw new ResponseStatusException(
-                HttpStatus.CONFLICT,
-                "El vehiculo ya tiene una reserva activa que se traslapa con esas fechas."
-            );
-        }
+        // Reglas de negocio: fechas validas, vehiculo DISPONIBLE y sin traslape
+        disponibilidadService.validarRangoFechas(dto.getFechaInicio(), dto.getFechaFin());
+        disponibilidadService.validarParaReservar(vehiculo, dto.getFechaInicio(), dto.getFechaFin());
 
         Reserva reserva = Reserva.builder()
             .cliente(cliente)
@@ -71,7 +55,8 @@ public class ReservaServiceImpl implements ReservaService {
             .build();
         reserva.calcularCostoTotal();
 
-        // Al confirmar la reserva, el vehiculo pasa a ALQUILADO
+        // Regla de estado: al confirmar la reserva el vehiculo pasa a ALQUILADO
+        ReglasEstadoVehiculo.validarTransicion(vehiculo.getEstado(), EstadoVehiculo.ALQUILADO);
         vehiculo.setEstado(EstadoVehiculo.ALQUILADO);
         vehiculoRepository.save(vehiculo);
 
@@ -97,8 +82,7 @@ public class ReservaServiceImpl implements ReservaService {
     @Transactional(readOnly = true)
     public List<ReservaResponseDTO> obtenerPorCliente(Long clienteId) {
         if (!clienteRepository.existsById(clienteId)) {
-            throw new ResponseStatusException(
-                HttpStatus.NOT_FOUND, "Cliente con ID " + clienteId + " no encontrado.");
+            throw new ResourceNotFoundException("Cliente con ID " + clienteId + " no encontrado.");
         }
         return reservaRepository.findByClienteId(clienteId)
             .stream()
@@ -110,23 +94,12 @@ public class ReservaServiceImpl implements ReservaService {
     public ReservaResponseDTO actualizarReserva(Long id, ActualizarReservaDTO dto) {
         Reserva reserva = buscarPorIdOLanzarError(id);
 
-        if (reserva.getEstado() != EstadoReserva.ACTIVA) {
-            throw new ResponseStatusException(
-                HttpStatus.CONFLICT,
-                "Solo se pueden modificar reservas ACTIVAS. Estado actual: " + reserva.getEstado() + "."
-            );
-        }
-
-        validarRangoFechas(dto.getFechaInicio(), dto.getFechaFin());
+        ReglasEstadoReserva.validarModificable(reserva.getEstado());
+        disponibilidadService.validarRangoFechas(dto.getFechaInicio(), dto.getFechaFin());
 
         // Se excluye la propia reserva para que no choque consigo misma
-        if (reservaRepository.existeReservaActivaEnRango(
-                reserva.getVehiculo().getId(), dto.getFechaInicio(), dto.getFechaFin(), reserva.getId())) {
-            throw new ResponseStatusException(
-                HttpStatus.CONFLICT,
-                "El vehiculo ya tiene otra reserva activa que se traslapa con esas fechas."
-            );
-        }
+        disponibilidadService.validarSinTraslape(
+            reserva.getVehiculo().getId(), dto.getFechaInicio(), dto.getFechaFin(), reserva.getId());
 
         reserva.setFechaInicio(dto.getFechaInicio());
         reserva.setFechaFin(dto.getFechaFin());
@@ -148,14 +121,7 @@ public class ReservaServiceImpl implements ReservaService {
     @Override
     public void eliminarReserva(Long id) {
         Reserva reserva = buscarPorIdOLanzarError(id);
-
-        if (reserva.getEstado() == EstadoReserva.ACTIVA) {
-            throw new ResponseStatusException(
-                HttpStatus.CONFLICT,
-                "No se puede eliminar una reserva ACTIVA. Cancelela o finalicela primero."
-            );
-        }
-
+        ReglasEstadoReserva.validarEliminable(reserva.getEstado());
         reservaRepository.delete(reserva);
     }
 
@@ -165,18 +131,13 @@ public class ReservaServiceImpl implements ReservaService {
     private ReservaResponseDTO cerrarReserva(Long id, EstadoReserva nuevoEstado) {
         Reserva reserva = buscarPorIdOLanzarError(id);
 
-        if (reserva.getEstado() != EstadoReserva.ACTIVA) {
-            throw new ResponseStatusException(
-                HttpStatus.CONFLICT,
-                "La reserva ya esta " + reserva.getEstado() + " y no puede cambiar a " + nuevoEstado + "."
-            );
-        }
-
+        ReglasEstadoReserva.validarTransicion(reserva.getEstado(), nuevoEstado);
         reserva.setEstado(nuevoEstado);
 
         // Solo se libera si sigue ALQUILADO (no pisa un EN_MANTENIMIENTO)
         Vehiculo vehiculo = reserva.getVehiculo();
         if (vehiculo.getEstado() == EstadoVehiculo.ALQUILADO) {
+            ReglasEstadoVehiculo.validarTransicion(EstadoVehiculo.ALQUILADO, EstadoVehiculo.DISPONIBLE);
             vehiculo.setEstado(EstadoVehiculo.DISPONIBLE);
             vehiculoRepository.save(vehiculo);
         }
@@ -184,19 +145,10 @@ public class ReservaServiceImpl implements ReservaService {
         return toResponseDTO(reservaRepository.save(reserva));
     }
 
-    private void validarRangoFechas(LocalDate inicio, LocalDate fin) {
-        if (!inicio.isBefore(fin)) {
-            throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                "La fecha de inicio debe ser anterior a la fecha de fin."
-            );
-        }
-    }
-
     private Reserva buscarPorIdOLanzarError(Long id) {
         return reservaRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND, "Reserva con ID " + id + " no encontrada."));
+            .orElseThrow(() -> new ResourceNotFoundException(
+                "Reserva con ID " + id + " no encontrada."));
     }
 
     private ReservaResponseDTO toResponseDTO(Reserva r) {

@@ -1,17 +1,19 @@
 package org.ues.poo135.alquiler.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.ues.poo135.alquiler.dto.CrearVehiculoDTO;
 import org.ues.poo135.alquiler.dto.VehiculoResponseDTO;
+import org.ues.poo135.alquiler.exception.ConflictException;
+import org.ues.poo135.alquiler.exception.ResourceNotFoundException;
+import org.ues.poo135.alquiler.model.Reserva.EstadoReserva;
 import org.ues.poo135.alquiler.model.Vehiculo;
 import org.ues.poo135.alquiler.model.Vehiculo.EstadoVehiculo;
-import org.ues.poo135.alquiler.repository.VehiculoRepository;
-import org.ues.poo135.alquiler.service.VehiculoService;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import org.ues.poo135.alquiler.repository.ReservaRepository;
-import org.ues.poo135.alquiler.model.Reserva.EstadoReserva;
+import org.ues.poo135.alquiler.repository.VehiculoRepository;
+import org.ues.poo135.alquiler.rules.ReglasEstadoVehiculo;
+import org.ues.poo135.alquiler.service.DisponibilidadService;
+import org.ues.poo135.alquiler.service.VehiculoService;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -22,14 +24,13 @@ public class VehiculoServiceImpl implements VehiculoService {
 
     private final VehiculoRepository vehiculoRepository;
     private final ReservaRepository reservaRepository;
+    private final DisponibilidadService disponibilidadService;
 
     @Override
     public VehiculoResponseDTO crearVehiculo(CrearVehiculoDTO dto) {
         if (vehiculoRepository.existsByPlaca(dto.getPlaca())) {
-            throw new ResponseStatusException(
-                HttpStatus.CONFLICT,
-                "Ya existe un vehiculo registrado con la placa: " + dto.getPlaca()
-            );
+            throw new ConflictException(
+                "Ya existe un vehiculo registrado con la placa: " + dto.getPlaca());
         }
 
         Vehiculo vehiculo = Vehiculo.builder()
@@ -64,10 +65,8 @@ public class VehiculoServiceImpl implements VehiculoService {
         // Si cambio la placa, verificar que la nueva no este en uso por otro vehiculo
         if (!vehiculo.getPlaca().equals(dto.getPlaca())
                 && vehiculoRepository.existsByPlaca(dto.getPlaca())) {
-            throw new ResponseStatusException(
-                HttpStatus.CONFLICT,
-                "La placa " + dto.getPlaca() + " ya esta en uso por otro vehiculo."
-            );
+            throw new ConflictException(
+                "La placa " + dto.getPlaca() + " ya esta en uso por otro vehiculo.");
         }
 
         vehiculo.setMarca(dto.getMarca());
@@ -82,35 +81,33 @@ public class VehiculoServiceImpl implements VehiculoService {
     @Override
     public VehiculoResponseDTO cambiarEstado(Long id, EstadoVehiculo nuevoEstado) {
         Vehiculo vehiculo = buscarPorIdOLanzarError(id);
-        // Solo se bloquea si hay una reserva activa; se libera cancelandola o finalizandola
+
+        // Regla 1: la transicion debe existir en la maquina de estados
+        ReglasEstadoVehiculo.validarTransicion(vehiculo.getEstado(), nuevoEstado);
+
+        // Regla 2: no se libera un vehiculo con una reserva activa
         if (nuevoEstado == EstadoVehiculo.DISPONIBLE
-            && reservaRepository.existsByVehiculoIdAndEstado(id, EstadoReserva.ACTIVA)) {
-                throw new ResponseStatusException(
-                    HttpStatus.CONFLICT,
-                    "El vehiculo tiene una reserva activa. Cancele o finalice la reserva primero."
-          );
+                && reservaRepository.existsByVehiculoIdAndEstado(id, EstadoReserva.ACTIVA)) {
+            throw new ConflictException(
+                "El vehiculo tiene una reserva activa. Cancele o finalice la reserva primero.");
         }
 
-    vehiculo.setEstado(nuevoEstado);
-    return toResponseDTO(vehiculoRepository.save(vehiculo));
-}
+        vehiculo.setEstado(nuevoEstado);
+        return toResponseDTO(vehiculoRepository.save(vehiculo));
+    }
 
     @Override
     public void eliminarVehiculo(Long id) {
         Vehiculo vehiculo = buscarPorIdOLanzarError(id);
 
         if (vehiculo.getEstado() == EstadoVehiculo.ALQUILADO) {
-            throw new ResponseStatusException(
-                HttpStatus.CONFLICT,
-                "No se puede eliminar un vehiculo que esta actualmente alquilado."
-            );
+            throw new ConflictException(
+                "No se puede eliminar un vehiculo que esta actualmente alquilado.");
         }
         if (reservaRepository.existsByVehiculoId(id)) {
-    throw new ResponseStatusException(
-        HttpStatus.CONFLICT,
-        "No se puede eliminar un vehiculo que tiene reservas registradas."
-    );
-   }
+            throw new ConflictException(
+                "No se puede eliminar un vehiculo que tiene reservas registradas.");
+        }
 
         vehiculoRepository.delete(vehiculo);
     }
@@ -123,31 +120,19 @@ public class VehiculoServiceImpl implements VehiculoService {
             .toList();
     }
 
-
     @Override
-public boolean verificarDisponibilidad(Long vehiculoId, LocalDate fechaInicio, LocalDate fechaFin) {
-    Vehiculo vehiculo = buscarPorIdOLanzarError(vehiculoId);
-
-    if (!fechaInicio.isBefore(fechaFin)) {
-        throw new ResponseStatusException(
-            HttpStatus.BAD_REQUEST,
-            "La fecha de inicio debe ser anterior a la fecha de fin."
-        );
+    public boolean verificarDisponibilidad(Long vehiculoId, LocalDate fechaInicio, LocalDate fechaFin) {
+        Vehiculo vehiculo = buscarPorIdOLanzarError(vehiculoId);
+        disponibilidadService.validarRangoFechas(fechaInicio, fechaFin);
+        return disponibilidadService.estaDisponible(vehiculo, fechaInicio, fechaFin);
     }
-
-    return vehiculo.getEstado() == EstadoVehiculo.DISPONIBLE
-        && !reservaRepository.existeReservaActivaEnRango(vehiculoId, fechaInicio, fechaFin, -1L);
-}
-
 
     // ── helpers ─────────────────────────────────────────────────────────────
 
     private Vehiculo buscarPorIdOLanzarError(Long id) {
         return vehiculoRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                "Vehiculo con ID " + id + " no encontrado."
-            ));
+            .orElseThrow(() -> new ResourceNotFoundException(
+                "Vehiculo con ID " + id + " no encontrado."));
     }
 
     private VehiculoResponseDTO toResponseDTO(Vehiculo v) {
