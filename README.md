@@ -82,11 +82,22 @@ API REST desarrollada con Spring Boot para la gestión y automatización del alq
 
 **Respuestas:** `201` al crear, `200` al consultar o actualizar, `204` al eliminar, `400` por datos inválidos, `404` si el cliente no existe y `409` si el documento o el correo ya están registrados.
 
-### Reservas *(En desarrollo)*
+### Reservas (`/api/reservas`)
+- `POST /api/reservas` - Crear una nueva reserva.
+- `GET /api/reservas` - Listar todas las reservas.
+- `GET /api/reservas/{id}` - Obtener reserva por ID.
+- `GET /api/reservas/cliente/{clienteId}` - Listar reservas de un cliente.
+- `PUT /api/reservas/{id}` - Modificar rango de fechas de una reserva activa.
+- `PATCH /api/reservas/{id}/cancelar` - Cancelar reserva activa y liberar vehiculo.
+- `PATCH /api/reservas/{id}/finalizar` - Finalizar reserva activa y liberar vehiculo.
+- `DELETE /api/reservas/{id}` - Eliminar reserva.
 
 ## Manejo de Excepciones
 
 La API cuenta con un manejador global de errores (`GlobalExceptionHandler`) que devuelve respuestas unificadas en formato JSON ante errores de validación (400), recursos no encontrados (404), conflictos de unicidad (409) o errores internos (500).
+
+## Ejecucion y Pruebas
+Desde `alquilerVehiculos`: `./gradlew bootRun` y `./gradlew test` (JUnit 5 + Mockito).os (500).
 
 ---
 ## Base de Datos y Datos Iniciales
