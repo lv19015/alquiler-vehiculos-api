@@ -31,3 +31,5 @@ VALUES ('María', 'López', '03214567-8', 'maria.lopez@example.com', '7012-3456'
 
 INSERT INTO clientes (nombre, apellido, documento_identidad, correo, telefono, licencia_conducir)
 VALUES ('Jorge', 'Hernández', '05123489-2', 'jorge.hernandez@example.com', '6234-5678', 'L-987654');
+INSERT INTO reservas (cliente_id, vehiculo_id, fecha_inicio, fecha_fin, costo_total, estado)
+VALUES (1, 4, '2026-11-22', '2026-11-26', 120.00, 'ACTIVA');
