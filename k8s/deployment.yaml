@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alquiler-vehiculos
+  labels:
+    app: alquiler-vehiculos
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alquiler-vehiculos
+  template:
+    metadata:
+      labels:
+        app: alquiler-vehiculos
+    spec:
+      containers:
+        - name: alquiler-vehiculos
+          image: alquiler-vehiculos:latest
+          # Never: usa la imagen construida localmente con docker build,
+          # sin intentar descargarla de un registro (Docker Hub, GHCR, etc.)
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 40
+            periodSeconds: 20
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
