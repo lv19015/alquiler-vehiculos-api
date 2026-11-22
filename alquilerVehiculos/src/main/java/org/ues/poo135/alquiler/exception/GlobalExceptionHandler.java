@@ -1,91 +1,134 @@
 package org.ues.poo135.alquiler.exception;
-//captura las excepciones y devuelve el ErrorResponseDTO
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.server.ResponseStatusException;
-import org.ues.poo135.alquiler.dto.ErrorResponseDTO;
-import java.time.LocalDateTime;
-import java.util.stream.Collectors;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import java.util.Arrays;
+import java.util.List;
+
+/**
+ * Manejo global de errores: ningun controlador necesita try-catch.
+ * Todas las respuestas de error salen con el formato de ApiError.
+ */
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // Maneja el error 404 - Recursos no encontrados
+    // ── Excepciones de negocio ───────────────────────────────────────────────
+
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorResponseDTO> handleResourceNotFoundException(
-            ResourceNotFoundException ex, HttpServletRequest request) {
-        ErrorResponseDTO error = ErrorResponseDTO.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.NOT_FOUND.value())
-                .error(HttpStatus.NOT_FOUND.getReasonPhrase())
-                .message(ex.getMessage())
-                .path(request.getRequestURI())
-                .build();
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    public ResponseEntity<ApiError> handleNotFound(ResourceNotFoundException ex, HttpServletRequest req) {
+        return build(HttpStatus.NOT_FOUND, ex.getMessage(), req, null);
     }
-    // Maneja el error 400 - Peticiones incorrectas
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ApiError> handleConflict(ConflictException ex, HttpServletRequest req) {
+        return build(HttpStatus.CONFLICT, ex.getMessage(), req, null);
+    }
+
     @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<ErrorResponseDTO> handleBadRequestException(
-            BadRequestException ex, HttpServletRequest request) {
-        ErrorResponseDTO error = ErrorResponseDTO.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.BAD_REQUEST.value())
-                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                .message(ex.getMessage())
-                .path(request.getRequestURI())
-                .build();
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ApiError> handleBadRequest(BadRequestException ex, HttpServletRequest req) {
+        return build(HttpStatus.BAD_REQUEST, ex.getMessage(), req, null);
     }
-    // Maneja validaciones de los DTOs
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponseDTO> handleValidationExceptions(
-            MethodArgumentNotValidException ex, HttpServletRequest request) {
-        String mensajes = ex.getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .map(FieldError::getDefaultMessage)
-                .collect(Collectors.joining("; "));
-        ErrorResponseDTO error = ErrorResponseDTO.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.BAD_REQUEST.value())
-                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                .message(mensajes)
-                .path(request.getRequestURI())
-                .build();
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-    }
-    // Compatibilidad con ResponseStatusException utilizada en el módulo de vehículos
+
+    /** Compatibilidad: los servicios que aun lanzan ResponseStatusException. */
     @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<ErrorResponseDTO> handleResponseStatusException(
-            ResponseStatusException ex, HttpServletRequest request) {
+    public ResponseEntity<ApiError> handleResponseStatus(ResponseStatusException ex, HttpServletRequest req) {
         HttpStatus status = HttpStatus.valueOf(ex.getStatusCode().value());
-        ErrorResponseDTO error = ErrorResponseDTO.builder()
-                .timestamp(LocalDateTime.now())
-                .status(status.value())
-                .error(status.getReasonPhrase())
-                .message(ex.getReason())
-                .path(request.getRequestURI())
-                .build();
-        return new ResponseEntity<>(error, status);
+        String message = ex.getReason() != null ? ex.getReason() : status.getReasonPhrase();
+        return build(status, message, req, null);
     }
-    // Maneja cualquier otro error inesperado (500)
+
+    // ── Validaciones y peticiones mal formadas (400) ─────────────────────────
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiError> handleValidation(MethodArgumentNotValidException ex, HttpServletRequest req) {
+        List<String> details = ex.getBindingResult().getFieldErrors().stream()
+                .map(f -> f.getField() + ": " + f.getDefaultMessage())
+                .toList();
+        return build(HttpStatus.BAD_REQUEST, "Error de validacion en los datos enviados.", req, details);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ApiError> handleConstraint(ConstraintViolationException ex, HttpServletRequest req) {
+        List<String> details = ex.getConstraintViolations().stream()
+                .map(v -> v.getPropertyPath() + ": " + v.getMessage())
+                .toList();
+        return build(HttpStatus.BAD_REQUEST, "Error de validacion en los datos enviados.", req, details);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiError> handleUnreadable(HttpMessageNotReadableException ex, HttpServletRequest req) {
+        return build(HttpStatus.BAD_REQUEST,
+                "El cuerpo de la peticion no es un JSON valido o tiene un formato incorrecto "
+                        + "(las fechas deben ir como AAAA-MM-DD).", req, null);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiError> handleTypeMismatch(MethodArgumentTypeMismatchException ex, HttpServletRequest req) {
+        String permitidos = "";
+        Class<?> tipo = ex.getRequiredType();
+        if (tipo != null && tipo.isEnum()) {
+            permitidos = " Valores permitidos: " + Arrays.toString(tipo.getEnumConstants()) + ".";
+        }
+        return build(HttpStatus.BAD_REQUEST,
+                "El valor '" + ex.getValue() + "' no es valido para el parametro '" + ex.getName() + "'." + permitidos,
+                req, null);
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ApiError> handleMissingParam(MissingServletRequestParameterException ex, HttpServletRequest req) {
+        return build(HttpStatus.BAD_REQUEST,
+                "Falta el parametro obligatorio '" + ex.getParameterName() + "'.", req, null);
+    }
+
+    // ── Errores de ruta o de protocolo ───────────────────────────────────────
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ApiError> handleNoResource(NoResourceFoundException ex, HttpServletRequest req) {
+        return build(HttpStatus.NOT_FOUND, "La ruta solicitada no existe.", req, null);
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ApiError> handleMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpServletRequest req) {
+        return build(HttpStatus.METHOD_NOT_ALLOWED,
+                "El metodo " + ex.getMethod() + " no esta soportado para esta ruta.", req, null);
+    }
+
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public ResponseEntity<ApiError> handleMediaType(HttpMediaTypeNotSupportedException ex, HttpServletRequest req) {
+        return build(HttpStatus.UNSUPPORTED_MEDIA_TYPE,
+                "Content-Type no soportado. Use application/json.", req, null);
+    }
+
+    // ── Base de datos y errores inesperados ──────────────────────────────────
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiError> handleIntegrity(DataIntegrityViolationException ex, HttpServletRequest req) {
+        log.warn("Violacion de integridad en {}: {}", req.getRequestURI(), ex.getMostSpecificCause().getMessage());
+        return build(HttpStatus.CONFLICT,
+                "La operacion viola una restriccion de la base de datos (dato duplicado o registros relacionados).",
+                req, null);
+    }
+
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponseDTO> handleGlobalException(
-            Exception ex, HttpServletRequest request) {
-        ErrorResponseDTO error = ErrorResponseDTO.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .error(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
-                .message(ex.getMessage())
-                .path(request.getRequestURI())
-                .build();
-        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<ApiError> handleUnexpected(Exception ex, HttpServletRequest req) {
+        log.error("Error inesperado en {}", req.getRequestURI(), ex);
+        return build(HttpStatus.INTERNAL_SERVER_ERROR, "Ocurrio un error inesperado.", req, null);
     }
 
     // Maneja violaciones de integridad en la BD
