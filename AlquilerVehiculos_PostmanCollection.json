@@ -2,43 +2,135 @@
   "info": {
     "_postman_id": "ba59ae30-5157-496f-92c7-2b6af74f781a",
     "name": "Alquiler de Vehiculos",
-    "description": "Pruebas de todos los modulos: clientes, vehiculos, mantenimientos y reservas. Ejecutar cada carpeta en orden (Runner).",
+    "description": "[Learn more about Postman Collections.](https://learning.postman.com/docs/collections/collections-overview/)",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "59127106",
     "_collection_link": "https://go.postman.co/collection/59127106-ba59ae30-5157-496f-92c7-2b6af74f781a?source=collection_link"
   },
   "item": [
     {
-      "name": "1. Clientes",
-      "description": "Autocontenida: crea sus propios datos con valores aleatorios, se puede ejecutar varias veces.",
-      "item": [
+      "name": "Base",
+      "event": [
         {
-          "name": "01 Crear cliente (201)",
-          "event": [
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            ""
+          ]
+        },
+        "description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+      },
+      "response": [
+        {
+          "name": "Base",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                ""
+              ]
+            }
+          },
+          "_postman_previewlanguage": "text",
+          "header": [
             {
-              "listen": "prerequest",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "const rnd = Math.floor(10000 + Math.random() * 90000);",
-                  "pm.collectionVariables.set('docCliente', '0' + rnd + '-1');",
-                  "pm.collectionVariables.set('correoCliente', 'cliente' + rnd + '@example.com');"
-                ]
-              }
+              "key": "content-type",
+              "value": "text/plain;charset=UTF-8"
             },
             {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 201\", function () { pm.response.to.have.status(201); });",
-                  "if (pm.response.code < 300) { pm.collectionVariables.set(\"clienteId\", pm.response.json().id); }",
-                  "pm.test(\"El correo coincide\", function () { const b = pm.response.json(); pm.expect(b.correo === pm.collectionVariables.get('correoCliente')).to.be.true; });"
-                ]
-              }
+              "key": "content-length",
+              "value": "72"
+            },
+            {
+              "key": "date",
+              "value": "Thu, 22 Oct 2026 04:38:18 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
             }
           ],
-          "request": {
+          "cookie": [],
+          "body": "Test 1: Sistema de alquiler de vehículos funcionando con Spring Boot :)"
+        }
+      ]
+    },
+    {
+      "name": "Crear Vehiculo",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Successful POST request\", function () {\n    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\n});\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"marca\": \"Volvo\",\n  \"modelo\": \"XC60\",\n  \"placa\": \"P10901\",\n  \"categoria\": \"SUV\",\n  \"precioPorDia\": 70.00\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/vehiculos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "vehiculos"
+          ]
+        },
+        "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+      },
+      "response": [
+        {
+          "name": "Crear Vehiculo",
+          "originalRequest": {
             "method": "POST",
             "header": [
               {
@@ -46,43 +138,57 @@
                 "value": "application/json"
               }
             ],
-            "url": {
-              "raw": "{{baseUrl}}/api/clientes",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "clientes"
-              ]
-            },
-            "description": "Crea un cliente con documento y correo unicos. Guarda el id en {{clienteId}}.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Carlos\",\n  \"apellido\": \"Martinez\",\n  \"documentoIdentidad\": \"{{docCliente}}\",\n  \"correo\": \"{{correoCliente}}\",\n  \"telefono\": \"7788-1234\",\n  \"licenciaConducir\": \"L-123456\"\n}",
+              "raw": "{\n  \"marca\": \"Mazda\",\n  \"modelo\": \"CX-5\",\n  \"placa\": \"P10901\",\n  \"categoria\": \"SUV\",\n  \"precioPorDia\": 50.00\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/vehiculos",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "vehiculos"
+              ]
             }
           },
-          "response": []
-        },
-        {
-          "name": "02 Crear cliente con documento duplicado (409)",
-          "event": [
+          "_postman_previewlanguage": "json",
+          "header": [
             {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 409\", function () { pm.response.to.have.status(409); });"
-                ]
-              }
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "transfer-encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "date",
+              "value": "Thu, 22 Oct 2026 04:40:16 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
             }
           ],
-          "request": {
+          "cookie": [],
+          "body": "{\n  \"id\": 7,\n  \"marca\": \"Mazda\",\n  \"modelo\": \"CX-5\",\n  \"placa\": \"P10901\",\n  \"categoria\": \"SUV\",\n  \"precioPorDia\": 50,\n  \"estado\": \"DISPONIBLE\"\n}"
+        },
+        {
+          "name": "Crear Vehiculo",
+          "originalRequest": {
             "method": "POST",
             "header": [
               {
@@ -90,87 +196,53 @@
                 "value": "application/json"
               }
             ],
-            "url": {
-              "raw": "{{baseUrl}}/api/clientes",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "clientes"
-              ]
-            },
-            "description": "Mismo documento y correo que el cliente anterior.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Carlos\",\n  \"apellido\": \"Martinez\",\n  \"documentoIdentidad\": \"{{docCliente}}\",\n  \"correo\": \"{{correoCliente}}\",\n  \"telefono\": \"7788-1234\",\n  \"licenciaConducir\": \"L-123456\"\n}",
+              "raw": "{\n  \"marca\": \"Volvo\",\n  \"modelo\": \"XC60\",\n  \"placa\": \"P10901\",\n  \"categoria\": \"SUV\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "03 Crear cliente con correo duplicado (409)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 409\", function () { pm.response.to.have.status(409); });"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
+            },
             "url": {
-              "raw": "{{baseUrl}}/api/clientes",
+              "raw": "http://localhost:8080/api/vehiculos",
+              "protocol": "http",
               "host": [
-                "{{baseUrl}}"
+                "localhost"
               ],
+              "port": "8080",
               "path": [
                 "api",
-                "clientes"
+                "vehiculos"
               ]
-            },
-            "description": "Documento distinto pero el mismo correo.",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Carlos\",\n  \"apellido\": \"Martinez\",\n  \"documentoIdentidad\": \"X{{docCliente}}\",\n  \"correo\": \"{{correoCliente}}\",\n  \"telefono\": \"7788-1234\",\n  \"licenciaConducir\": \"L-123456\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
             }
           },
-          "response": []
-        },
-        {
-          "name": "04 Crear cliente con datos invalidos (400)",
-          "event": [
+          "_postman_previewlanguage": "json",
+          "header": [
             {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Codigo 400\", function () { pm.response.to.have.status(400); });"
-                ]
-              }
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "transfer-encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "date",
+              "value": "Thu, 22 Oct 2026 04:44:09 GMT"
+            },
+            {
+              "key": "connection",
+              "value": "close"
             }
           ],
-          "request": {
+          "cookie": [],
+          "body": "{\n  \"timestamp\": \"2026-10-21 22:44:09\",\n  \"status\": 400,\n  \"error\": \"Bad Request\",\n  \"message\": \"El precio por día es obligatorio.\",\n  \"path\": \"/api/vehiculos\"\n}"
+        },
+        {
+          "name": "Crear Vehiculo",
+          "originalRequest": {
             "method": "POST",
             "header": [
               {
@@ -1038,6 +1110,779 @@
           ],
           "cookie": [],
           "body": "{\n  \"id\": 4,\n  \"nombre\": \"Abigail\",\n  \"apellido\": \"Rivas\",\n  \"documentoIdentidad\": \"06120056-7\",\n  \"correo\": \"abigail.rivas@gmail.com\",\n  \"telefono\": \"7890-1234\",\n  \"licenciaConducir\": \"L-554433\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Listar Reservas",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/reservas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "reservas"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Listar Reservas",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/reservas",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "reservas"
+              ]
+            }
+          },
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Transfer-Encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "Date",
+              "value": "Mon, 23 Nov 2026 05:52:33 GMT"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "[\n  {\n    \"id\": 1,\n    \"clienteId\": 1,\n    \"nombreCliente\": \"Carlos Martínez\",\n    \"vehiculoId\": 4,\n    \"vehiculo\": \"Kia Rio\",\n    \"placa\": \"P321654\",\n    \"fechaInicio\": \"2026-11-22\",\n    \"fechaFin\": \"2026-11-26\",\n    \"costoTotal\": 120,\n    \"estado\": \"ACTIVA\"\n  }\n]"
+        }
+      ]
+    },
+    {
+      "name": "Obtener reserva por ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/reservas/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "reservas",
+            "1"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Obtener reserva por ID",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/reservas/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "reservas",
+                "1"
+              ]
+            }
+          },
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Transfer-Encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "Date",
+              "value": "Mon, 23 Nov 2026 05:53:47 GMT"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"id\": 1,\n  \"clienteId\": 1,\n  \"nombreCliente\": \"Carlos Martínez\",\n  \"vehiculoId\": 4,\n  \"vehiculo\": \"Kia Rio\",\n  \"placa\": \"P321654\",\n  \"fechaInicio\": \"2026-11-22\",\n  \"fechaFin\": \"2026-11-26\",\n  \"costoTotal\": 120,\n  \"estado\": \"ACTIVA\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Crear Reserva",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"clienteId\": 2,\r\n  \"vehiculoId\": 2,\r\n  \"fechaInicio\": \"2026-12-01\",\r\n  \"fechaFin\": \"2026-12-05\"\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/reservas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "reservas"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Crear Reserva",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"clienteId\": 2,\r\n  \"vehiculoId\": 2,\r\n  \"fechaInicio\": \"2026-12-01\",\r\n  \"fechaFin\": \"2026-12-05\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/reservas",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "reservas"
+              ]
+            }
+          },
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Transfer-Encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "Date",
+              "value": "Mon, 23 Nov 2026 05:55:44 GMT"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"id\": 2,\n  \"clienteId\": 2,\n  \"nombreCliente\": \"María López\",\n  \"vehiculoId\": 2,\n  \"vehiculo\": \"Nissan Frontier\",\n  \"placa\": \"P987654\",\n  \"fechaInicio\": \"2026-12-01\",\n  \"fechaFin\": \"2026-12-05\",\n  \"costoTotal\": 220,\n  \"estado\": \"ACTIVA\"\n}"
+        },
+        {
+          "name": "Crear Reserva Error 400",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"clienteId\": 1,\r\n  \"vehiculoId\": 2,\r\n  \"fechaInicio\": \"2020-01-01\",\r\n  \"fechaFin\": \"2020-01-05\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/reservas",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "reservas"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Transfer-Encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "Date",
+              "value": "Mon, 23 Nov 2026 05:56:40 GMT"
+            },
+            {
+              "key": "Connection",
+              "value": "close"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"timestamp\": \"2026-11-22T23:56:40.3310281\",\n  \"status\": 400,\n  \"error\": \"Bad Request\",\n  \"message\": \"Error de validacion en los datos enviados.\",\n  \"path\": \"/api/reservas\",\n  \"details\": [\n    \"fechaInicio: La fecha de inicio no puede estar en el pasado.\",\n    \"fechaFin: La fecha de fin debe ser futura.\"\n  ]\n}"
+        }
+      ]
+    },
+    {
+      "name": "Actualizar Reserva",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"fechaInicio\": \"2026-11-23\",\r\n  \"fechaFin\": \"2026-11-28\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/reservas/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "reservas",
+            "1"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Actualizar Reserva",
+          "originalRequest": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"fechaInicio\": \"2026-11-23\",\r\n  \"fechaFin\": \"2026-11-28\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/reservas/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "reservas",
+                "1"
+              ]
+            }
+          },
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Transfer-Encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "Date",
+              "value": "Mon, 23 Nov 2026 05:58:42 GMT"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"id\": 1,\n  \"clienteId\": 1,\n  \"nombreCliente\": \"Carlos Martínez\",\n  \"vehiculoId\": 4,\n  \"vehiculo\": \"Kia Rio\",\n  \"placa\": \"P321654\",\n  \"fechaInicio\": \"2026-11-23\",\n  \"fechaFin\": \"2026-11-28\",\n  \"costoTotal\": 150,\n  \"estado\": \"ACTIVA\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Cancela Reserva",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/reservas/1/cancelar",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "reservas",
+            "1",
+            "cancelar"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Cancela Reserva",
+          "originalRequest": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/reservas/1/cancelar",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "reservas",
+                "1",
+                "cancelar"
+              ]
+            }
+          },
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Transfer-Encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "Date",
+              "value": "Mon, 23 Nov 2026 05:59:46 GMT"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"id\": 1,\n  \"clienteId\": 1,\n  \"nombreCliente\": \"Carlos Martínez\",\n  \"vehiculoId\": 4,\n  \"vehiculo\": \"Kia Rio\",\n  \"placa\": \"P321654\",\n  \"fechaInicio\": \"2026-11-23\",\n  \"fechaFin\": \"2026-11-28\",\n  \"costoTotal\": 150,\n  \"estado\": \"CANCELADA\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Listar Alquileres",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/alquileres",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "alquileres"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Listar Alquileres",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/alquileres",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "alquileres"
+              ]
+            }
+          },
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Transfer-Encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "Date",
+              "value": "Mon, 23 Nov 2026 06:02:30 GMT"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "[\n  {\n    \"id\": 1,\n    \"clienteId\": 1,\n    \"clienteNombre\": \"Carlos\",\n    \"vehiculoId\": 4,\n    \"vehiculoPlaca\": \"P321654\",\n    \"fechaInicio\": \"2026-11-20\",\n    \"fechaFin\": \"2026-11-23\",\n    \"total\": 90,\n    \"estado\": \"ACTIVO\",\n    \"creadoEn\": \"2026-11-22T23:49:19.342045\"\n  },\n  {\n    \"id\": 2,\n    \"clienteId\": 2,\n    \"clienteNombre\": \"María\",\n    \"vehiculoId\": 1,\n    \"vehiculoPlaca\": \"P123456\",\n    \"fechaInicio\": \"2026-11-10\",\n    \"fechaFin\": \"2026-11-12\",\n    \"total\": 70,\n    \"estado\": \"FINALIZADO\",\n    \"creadoEn\": \"2026-11-22T23:49:19.343043\"\n  }\n]"
+        }
+      ]
+    },
+    {
+      "name": "Crear Alquiler",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": true
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"clienteId\": 1,\r\n  \"vehiculoId\": 2,\r\n  \"fechaInicio\": \"2026-12-10\",\r\n  \"fechaFin\": \"2026-12-15\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/alquileres",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "alquileres"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Crear Alquiler",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"clienteId\": 1,\r\n  \"vehiculoId\": 2,\r\n  \"fechaInicio\": \"2026-12-10\",\r\n  \"fechaFin\": \"2026-12-15\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/alquileres",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "alquileres"
+              ]
+            }
+          },
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Location",
+              "value": "http://localhost:8080/api/alquileres/3"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Transfer-Encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "Date",
+              "value": "Mon, 23 Nov 2026 06:04:53 GMT"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"id\": 3,\n  \"clienteId\": 1,\n  \"clienteNombre\": \"Carlos\",\n  \"vehiculoId\": 2,\n  \"vehiculoPlaca\": \"P987654\",\n  \"fechaInicio\": \"2026-12-10\",\n  \"fechaFin\": \"2026-12-15\",\n  \"total\": 330,\n  \"estado\": \"ACTIVO\",\n  \"creadoEn\": \"2026-11-23T00:04:53.8629526\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Actualizar Alquiler",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/alquileres/1/finalizar",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "alquileres",
+            "1",
+            "finalizar"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Finalizar Alquiler",
+          "originalRequest": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/alquileres/1/finalizar",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "alquileres",
+                "1",
+                "finalizar"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Transfer-Encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "Date",
+              "value": "Mon, 23 Nov 2026 06:18:00 GMT"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"id\": 1,\n  \"clienteId\": 1,\n  \"clienteNombre\": \"Carlos\",\n  \"vehiculoId\": 4,\n  \"vehiculoPlaca\": \"P321654\",\n  \"fechaInicio\": \"2026-11-20\",\n  \"fechaFin\": \"2026-11-23\",\n  \"total\": 90,\n  \"estado\": \"FINALIZADO\",\n  \"creadoEn\": \"2026-11-22T23:49:19.342045\"\n}"
+        },
+        {
+          "name": "Cancelar Alquiler Error 400",
+          "originalRequest": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/alquileres/1/cancelar",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "alquileres",
+                "1",
+                "cancelar"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Transfer-Encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "Date",
+              "value": "Mon, 23 Nov 2026 06:19:08 GMT"
+            },
+            {
+              "key": "Connection",
+              "value": "close"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"timestamp\": \"2026-11-23T00:19:08.0143905\",\n  \"status\": 400,\n  \"error\": \"Bad Request\",\n  \"message\": \"Solo se pueden cancelar alquileres que estén activos\",\n  \"path\": \"/api/alquileres/1/cancelar\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Eliminar Alquiler",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/alquileres/2",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "alquileres",
+            "2"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Eliminar Alquiler",
+          "originalRequest": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/alquileres/2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "alquileres",
+                "2"
+              ]
+            }
+          },
+          "_postman_previewlanguage": "text",
+          "header": [
+            {
+              "key": "Date",
+              "value": "Mon, 23 Nov 2026 06:20:20 GMT"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": ""
         }
       ]
     }
