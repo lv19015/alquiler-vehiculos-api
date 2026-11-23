@@ -33,3 +33,10 @@ INSERT INTO clientes (nombre, apellido, documento_identidad, correo, telefono, l
 VALUES ('Jorge', 'Hernández', '05123489-2', 'jorge.hernandez@example.com', '6234-5678', 'L-987654');
 INSERT INTO reservas (cliente_id, vehiculo_id, fecha_inicio, fecha_fin, costo_total, estado)
 VALUES (1, 4, '2026-11-22', '2026-11-26', 120.00, 'ACTIVA');
+
+-- Inserción de registros iniciales de alquileres de prueba
+INSERT INTO alquileres (cliente_id, vehiculo_id, fecha_inicio, fecha_fin, total, estado, creado_en)
+VALUES (1, 4, '2026-11-20', '2026-11-23', 90.00, 'ACTIVO', CURRENT_TIMESTAMP);
+
+INSERT INTO alquileres (cliente_id, vehiculo_id, fecha_inicio, fecha_fin, total, estado, creado_en)
+VALUES (2, 1, '2026-11-10', '2026-11-12', 70.00, 'FINALIZADO', CURRENT_TIMESTAMP);
