@@ -1,0 +1,61 @@
+name: CI/CD Pipeline - Alquiler Vehiculos
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  # 1 COMPILACIÓN Y PRUEBAS UNITARIAS
+  build-and-test:
+    name: Build & Test (JUnit 5)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar codigo del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar JDK 21 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Dar permisos de ejecucion a Gradle Wrapper
+        run: chmod +x ./alquilerVehiculos/gradlew
+
+      - name: Ejecutar pruebas unitarias con JUnit y Mockito
+        run: |
+          cd alquilerVehiculos
+          ./gradlew test --no-daemon
+
+      - name: Compilar JAR ejecutable
+        run: |
+          cd alquilerVehiculos
+          ./gradlew bootJar -x test --no-daemon
+
+  # 2 CONSTRUCCIÓN DOCKER Y DESPLIEGUE A KUBERNETES LOCAL
+  deploy-k8s:
+    name: Docker Build & Deploy to Kubernetes
+    needs: build-and-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar codigo del repositorio
+        uses: actions/checkout@v4
+
+      - name: Construir imagen Docker local
+        run: |
+          docker build -t alquiler-vehiculos:latest ./alquilerVehiculos
+
+      - name: Desplegar en Kubernetes local con KUBECONFIG
+        env:
+          KUBECONFIG: ${{ github.workspace }}/.kube-local/config
+        run: |
+          echo "Desplegando en Kubernetes usando .kube-local/config..."
+          kubectl apply -f k8s/deployment.yaml
+          kubectl apply -f k8s/service.yaml
+          echo "Estado del despliegue:"
+          kubectl rollout status deployment/alquiler-vehiculos --timeout=60s
+          kubectl get pods -l app=alquiler-vehiculos
+          kubectl get service alquiler-vehiculos-service
